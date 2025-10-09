@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
 const healthInfoSchema = new mongoose.Schema({
-  height: { type: Number, required: true },
-  weight: { type: Number, required: true },
+  height: { type: Number},
+  weight: { type: Number},
   medicalHistory: { type: [String], default: [] },
   fitnessGoal: {
     type: String,

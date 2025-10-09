@@ -6,7 +6,7 @@ const membershipSchema = new mongoose.Schema({
   endDate: { type: Date }, // 🔧 sửa lỗi chính tả "enđDate"
   status: {
     type: String,
-    enum: ["active", "expired", "paused"],
+    enum: ["active", "expired", "pending"],
     default: "active"
   },
 });
