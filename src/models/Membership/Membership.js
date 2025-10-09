@@ -1,14 +1,16 @@
 const mongoose = require("mongoose");
 
 const membershipSchema = new mongoose.Schema({
-  packageId: { type: mongoose.Schema.Types.ObjectId, ref: "Package" },
-  startDate: { type: Date },
-  endDate: { type: Date }, // 🔧 sửa lỗi chính tả "enđDate"
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // ai sở hữu
+  packageId: { type: mongoose.Schema.Types.ObjectId, ref: "Package", required: true },
+  trainerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // nếu là gói PT
+  startDate: { type: Date, required: true },
+  endDate: { type: Date, required: true },
   status: {
     type: String,
     enum: ["active", "expired", "pending"],
-    default: "active"
+    default: "pending"
   },
-});
+}, { timestamps: true });
 
 module.exports = membershipSchema;
