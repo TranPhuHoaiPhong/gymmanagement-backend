@@ -14,8 +14,6 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
       required: true,
-      unique: true,
-      match: [/^\d{9,11}$/, "Invalid phone number"],
     },
     passwordHash: { type: String, required: true },
     avatarUrl: { type: String, default: "" },
