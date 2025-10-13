@@ -5,7 +5,6 @@ const bodyParser = require("body-parser");
 const connectDB = require("./src/config/db");
 const authRoutes = require("./src/routes/auth");
 const routes = require("./src/routes/index");
-const bodyParser = require("body-parser");
 
 const app = express();
 
