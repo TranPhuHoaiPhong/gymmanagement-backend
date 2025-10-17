@@ -31,3 +31,5 @@ Sau đó có thể chọn gói tập, đặt lịch, v.v.
 | **Staff**             | Do Admin tạo                   | ❌                  | Quản lý phòng tập, hội viên                 |
 | **Trainer**           | Do Admin hoặc Staff tạo        | ❌                  | Có thể đăng nhập sau khi được cấp tài khoản |
 | **Member (hội viên)** | Tự đăng ký                     | ✅                  | Có thể đăng ký qua app/web                  |
+
+Khi xóa tài khoản staff thì tài khoản sẽ từ "isActive": true thành false và không để đăng nhập vào hệ thống nữa các chức năng không thể dùng

@@ -52,8 +52,48 @@ const loginUser = async (req, res) => {
         message: "Email khong hop le",
       });
     }
-    const resCreate = await UserAdminService.loginUser(req.body);
-    return res.status(200).json(resCreate);
+    const resLogin = await UserAdminService.loginUser(req.body);
+    return res.status(200).json(resLogin);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const updateUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const data = req.body;
+
+    if (!userId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "UserId khong hop le",
+      });
+    }
+    const resUpdate = await UserAdminService.updateUser(userId, data);
+    return res.status(200).json(resUpdate);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const data = req.body;
+
+    if (!userId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "UserId khong hop le",
+      });
+    }
+    const resDelete = await UserAdminService.deleteUser(userId, data);
+    return res.status(200).json(resDelete);
   } catch (e) {
     return res.status(404).json({
       message: e,
@@ -64,4 +104,6 @@ const loginUser = async (req, res) => {
 module.exports = {
   createUser,
   loginUser,
+  updateUser,
+  deleteUser,
 };

@@ -1,5 +1,9 @@
 const User = require("../../models/User/User");
 const bcrypt = require("bcryptjs");
+const {
+  genneralAccessToken,
+  genneralRefreshToken,
+} = require("../JwtService/JwtService");
 
 const createUser = (newUser) => {
   return new Promise(async (resolve, reject) => {
@@ -33,6 +37,9 @@ const createUser = (newUser) => {
           phone,
           passwordHash: hash,
           role,
+          isAdmin: role === "admin" ? true : false,
+          isStaff: role === "staff" ? true : false,
+          isTrainer: role === "trainer" ? true : false,
         });
 
         if (createdUser) {
@@ -77,7 +84,6 @@ const loginUser = (userLogin) => {
         passwordHash,
         checkUser.passwordHash
       );
-      console.log("comparePassword: ", commparePassword);
 
       if (!commparePassword) {
         resolve({
@@ -85,10 +91,77 @@ const loginUser = (userLogin) => {
           message: "Mat khau khong dung",
         });
       } else {
+        const access_Token = await genneralAccessToken({
+          id: checkUser._id,
+          isAdmin: checkUser.isAdmin,
+        });
+
+        const refresh_Token = await genneralRefreshToken({
+          id: checkUser._id,
+          isAdmin: checkUser.isAdmin,
+        });
+
         resolve({
           status: "OK",
           message: "Dang nhap thanh cong",
-          data: checkUser,
+          access_Token,
+          refresh_Token,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const updateUser = (userId, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkUser = await User.findOne({
+        _id: userId,
+      });
+
+      if (checkUser === null) {
+        resolve({
+          status: "ERROR",
+          message: "User khong ton tai",
+        });
+      } else {
+        const updatedUser = await User.findByIdAndUpdate(checkUser._id, data, {
+          new: true,
+        });
+        resolve({
+          status: "OK",
+          message: "Cập nhật thành công",
+          data: updatedUser,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const deleteUser = (userId, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkUser = await User.findOne({
+        _id: userId,
+      });
+
+      if (checkUser === null) {
+        resolve({
+          status: "ERROR",
+          message: "User khong ton tai",
+        });
+      } else {
+        const deletedUser = await User.findByIdAndUpdate(checkUser._id, data, {
+          new: true,
+        });
+        resolve({
+          status: "OK",
+          message: "Xóa thành công",
+          data: deletedUser,
         });
       }
     } catch (e) {
@@ -100,4 +173,6 @@ const loginUser = (userLogin) => {
 module.exports = {
   createUser,
   loginUser,
+  updateUser,
+  deleteUser,
 };
