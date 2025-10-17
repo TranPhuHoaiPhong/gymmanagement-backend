@@ -1,7 +1,11 @@
+const express = require("express");
+const router = express.Router();
+
 const UserRouteAdmin = require("./Admin/UserRouteAdmin");
+const RouteCustomer = require("./Customer/UserRouteCustomer");
 
-const routes = (app) => {
-  app.use("/api/user", UserRouteAdmin);
-};
 
-module.exports = routes;
+router.use("/user", UserRouteAdmin);
+router.use("/auth", RouteCustomer);
+
+module.exports = router;

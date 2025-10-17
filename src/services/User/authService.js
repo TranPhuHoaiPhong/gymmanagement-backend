@@ -1,5 +1,6 @@
 const User = require("../../models/User/User");
 const bcrypt = require("bcryptjs"); 
+const jwt = require("jsonwebtoken");
 
 async function registerUserService({ fullName, email, password, phone, gender, dateOfBirth }) {
     try {
@@ -59,15 +60,48 @@ async function registerUserService({ fullName, email, password, phone, gender, d
     };
   }
 }
-// Hàm login user
+
 async function loginUserService({ email, password }) {
     const user = await User.findOne({ email });
-    if (!user) throw new Error("User not found");
+
+    if (!user) {
+      return {
+        success: false,
+        message: "Tài khoản không tồn tại!",
+      }
+    }
+
+    if (user.isActive === false) {
+      return {
+        success: false,
+        message: "Tài khoản đã bị vô hiệu hóa!",
+      }
+    }
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
-    if (!isMatch) throw new Error("Invalid password");
+    if (!isMatch) {
+      return {
+        success: false,
+        message: "Mật khẩu không đúng!",
+      };
+    }
 
-    return user; // sau này có thể trả token JWT
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    return {
+      success: true,
+      message: "Đăng nhập thành công",
+      data: {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+      },
+    };
 }
 
 module.exports = {

@@ -33,3 +33,29 @@ Sau đó có thể chọn gói tập, đặt lịch, v.v.
 | **Member (hội viên)** | Tự đăng ký                     | ✅                  | Có thể đăng ký qua app/web                  |
 
 Khi xóa tài khoản staff thì tài khoản sẽ từ "isActive": true thành false và không để đăng nhập vào hệ thống nữa các chức năng không thể dùng
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== app -->
+- Đổi mật khẩu: gmail => gửi mã => xác thực 
+- Đăng nhập : kiểm tra khóa tài khoản /
+- Token vào đăng nhập 

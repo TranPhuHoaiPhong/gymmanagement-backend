@@ -3,7 +3,6 @@ require("dotenv").config();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const connectDB = require("./src/config/db");
-const authRoutes = require("./src/routes/auth");
 const routes = require("./src/routes/index");
 
 const app = express();
@@ -16,8 +15,7 @@ app.use(express.json());
 connectDB();
 
 // Routes
-app.use("/api/auth", authRoutes);
-routes(app);
+app.use("/api", routes);
 
 app.use(bodyParser.json());
 

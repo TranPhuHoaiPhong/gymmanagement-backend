@@ -38,6 +38,7 @@ const createUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, passwordHash } = req.body;
+    console.log(req.body);
     const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     const regexPhone = /(84|0[3|5|7|8|9])+([0-9]{8})\b/;
     const isCheckEmail = regexEmail.test(email);
