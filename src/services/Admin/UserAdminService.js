@@ -170,9 +170,50 @@ const deleteUser = (userId, data) => {
   });
 };
 
+const getAllUsers = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const users = await User.find();
+      resolve({
+        status: "OK",
+        message: "Lấy danh sách thành công",
+        data: users,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getDetailsUser = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkUser = await User.findOne({
+        _id: userId,
+      });
+      if (checkUser === null) {
+        resolve({
+          status: "ERROR",
+          message: "User khong ton tai",
+        });
+      } else {
+        resolve({
+          status: "OK",
+          message: "Lấy thông tin thành công",
+          data: checkUser,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createUser,
   loginUser,
   updateUser,
   deleteUser,
+  getAllUsers,
+  getDetailsUser,
 };
