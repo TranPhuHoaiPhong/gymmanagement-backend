@@ -49,6 +49,55 @@ const createUser = (newUser) => {
   });
 };
 
+const loginUser = (userLogin) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const {
+        fullName,
+        dateOfBirth,
+        gender,
+        email,
+        phone,
+        passwordHash,
+        role,
+      } = userLogin;
+
+      const checkUser = await User.findOne({
+        email: email,
+      });
+
+      if (checkUser === null) {
+        resolve({
+          status: "ERROR",
+          message: "Email khong ton tai",
+        });
+      }
+
+      const commparePassword = bcrypt.compareSync(
+        passwordHash,
+        checkUser.passwordHash
+      );
+      console.log("comparePassword: ", commparePassword);
+
+      if (!commparePassword) {
+        resolve({
+          status: "ERROR",
+          message: "Mat khau khong dung",
+        });
+      } else {
+        resolve({
+          status: "OK",
+          message: "Dang nhap thanh cong",
+          data: checkUser,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createUser,
+  loginUser,
 };
