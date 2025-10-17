@@ -6,6 +6,8 @@ const RouteCustomer = require("./Customer/UserRouteCustomer");
 
 
 router.use("/user", UserRouteAdmin);
-router.use("/auth", RouteCustomer);
+
+router.use("/customer", RouteCustomer);
+
 
 module.exports = router;

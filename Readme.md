@@ -50,7 +50,9 @@ Khi xóa tài khoản staff thì tài khoản sẽ từ "isActive": true thành 
 
 
 
-
+/api/admin/....
+/api/customer/...
+/api/staff/...
 
 
 

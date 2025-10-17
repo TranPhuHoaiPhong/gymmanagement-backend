@@ -1,6 +1,7 @@
 const User = require("../../models/User/User");
 const bcrypt = require("bcryptjs"); 
 const jwt = require("jsonwebtoken");
+const { genneralAccessToken, genneralRefreshToken } = require("../JwtService/JwtService");
 
 async function registerUserService({ fullName, email, password, phone, gender, dateOfBirth }) {
     try {
@@ -62,6 +63,13 @@ async function registerUserService({ fullName, email, password, phone, gender, d
 }
 
 async function loginUserService({ email, password }) {
+    if (!email || !password) {
+      return {
+        success: false,
+        message: "Vui lòng điền đầy đủ thông tin",
+      };
+    }
+
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -86,15 +94,25 @@ async function loginUserService({ email, password }) {
       };
     }
 
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    const payload = { 
+                      id: user._id, 
+                      role: user.role, 
+                      email: user.email, 
+                      fullName: user.fullName, 
+                      gender: user.gender, 
+                      healthInfo: user.healthInfo,
+                      membership: user.membership
+                    };
+    const accessToken = genneralAccessToken(payload);
+    const refreshToken = genneralRefreshToken(payload);
 
     return {
       success: true,
       message: "Đăng nhập thành công",
+      tokens: {
+        accessToken,
+        refreshToken,
+      },
       data: {
         _id: user._id,
         fullName: user.fullName,

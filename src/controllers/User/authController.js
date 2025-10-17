@@ -18,14 +18,12 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const checkUser = await loginUserService(req.body);
-
-    console.log("checkUser:", checkUser);
-
+    
     if (!checkUser.success) {
       return res.status(400).json({ msg: checkUser.message }); 
     }
 
-    return res.status(200).json({ msg: checkUser.message, data: checkUser.data });
+    return res.status(200).json({ data: checkUser });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ msg: err.message });
