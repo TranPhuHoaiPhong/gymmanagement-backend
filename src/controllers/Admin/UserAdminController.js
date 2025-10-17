@@ -101,9 +101,42 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const resGetAll = await UserAdminService.getAllUsers();
+    return res.status(200).json(resGetAll);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const getDetailsUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    if (!userId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "UserId khong hop le",
+      });
+    }
+
+    const resDetails = await UserAdminService.getDetailsUser(userId);
+    return res.status(200).json(resDetails);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
   updateUser,
   deleteUser,
+  getAllUsers,
+  getDetailsUser,
 };
