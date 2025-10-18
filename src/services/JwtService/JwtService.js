@@ -8,7 +8,7 @@ const genneralAccessToken = (payload) => {
       payload,
     },
     process.env.ACCCESS_TOKEN,
-    { expiresIn: "1d" }
+    { expiresIn: "30s" }
   );
 
   return access_Token;
@@ -26,7 +26,39 @@ const genneralRefreshToken = (payload) => {
   return refresh_Token;
 };
 
+const refreshTokenJwtService = async (token) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log("token", token);
+      jwt.verify(token, process.env.REFRESH_TOKEN, (err, user) => {
+        if (err) {
+          console.log("err", err);
+          resolve({
+            status: "ERROR",
+            message: "Token khong hop le service",
+          });
+        }
+        console.log("user", user);
+        const { payload } = user;
+        const access_Token = genneralAccessToken({
+          id: payload?.id,
+          isAdmin: payload?.isAdmin,
+        });
+        console.log("access_Token", access_Token);
+        resolve({
+          status: "OK",
+          message: "Lấy token thành công",
+          access_Token,
+        });
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   genneralAccessToken,
   genneralRefreshToken,
+  refreshTokenJwtService,
 };

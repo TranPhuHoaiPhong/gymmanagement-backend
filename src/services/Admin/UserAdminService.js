@@ -170,14 +170,21 @@ const deleteUser = (userId, data) => {
   });
 };
 
-const getAllUsers = () => {
+const getAllUsers = (limit, page) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const users = await User.find();
+      const totalUsers = await User.countDocuments();
+      const users = await User.find()
+        .limit(limit)
+        .skip(page * limit);
+
       resolve({
         status: "OK",
         message: "Lấy danh sách thành công",
         data: users,
+        total: totalUsers,
+        pageCurrent: Number(page) + 1,
+        totalPage: Math.ceil(totalUsers / limit),
       });
     } catch (e) {
       reject(e);

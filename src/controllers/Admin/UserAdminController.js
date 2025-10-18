@@ -1,4 +1,5 @@
 const UserAdminService = require("../../services/Admin/UserAdminService");
+const JwtService = require("../../services/JwtService/JwtService");
 
 const createUser = async (req, res) => {
   try {
@@ -104,7 +105,11 @@ const deleteUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const resGetAll = await UserAdminService.getAllUsers();
+    const { limit, page } = req.query;
+    const resGetAll = await UserAdminService.getAllUsers(
+      Number(limit),
+      Number(page)
+    );
     return res.status(200).json(resGetAll);
   } catch (e) {
     return res.status(404).json({
@@ -133,6 +138,25 @@ const getDetailsUser = async (req, res) => {
   }
 };
 
+const refreshToken = async (req, res) => {
+  try {
+    const token = req.headers.token.split(" ")[1];
+
+    if (!token) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Token khong hop le controller",
+      });
+    }
+    const resRefresh = await JwtService.refreshTokenJwtService(token);
+    return res.status(200).json(resRefresh);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -140,4 +164,5 @@ module.exports = {
   deleteUser,
   getAllUsers,
   getDetailsUser,
+  refreshToken,
 };
