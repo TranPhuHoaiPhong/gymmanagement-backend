@@ -171,12 +171,17 @@ const deleteUser = (userId, data) => {
 };
 
 const getAllUsers = (limit, page) => {
+  // sort
+  // console.log("Sort query:", sort);
   return new Promise(async (resolve, reject) => {
     try {
       const totalUsers = await User.countDocuments();
       const users = await User.find()
         .limit(limit)
         .skip(page * limit);
+      // .sort({
+      //   fullName: sort,
+      // });
 
       resolve({
         status: "OK",

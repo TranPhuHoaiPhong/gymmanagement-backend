@@ -8,7 +8,8 @@ const genneralAccessToken = (payload) => {
       payload,
     },
     process.env.ACCCESS_TOKEN,
-    { expiresIn: "30s" }
+    { expiresIn: "1d" }
+    // chinh lai 30s sau nay
   );
 
   return access_Token;
@@ -29,7 +30,6 @@ const genneralRefreshToken = (payload) => {
 const refreshTokenJwtService = async (token) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("token", token);
       jwt.verify(token, process.env.REFRESH_TOKEN, (err, user) => {
         if (err) {
           console.log("err", err);
@@ -38,13 +38,11 @@ const refreshTokenJwtService = async (token) => {
             message: "Token khong hop le service",
           });
         }
-        console.log("user", user);
         const { payload } = user;
         const access_Token = genneralAccessToken({
           id: payload?.id,
           isAdmin: payload?.isAdmin,
         });
-        console.log("access_Token", access_Token);
         resolve({
           status: "OK",
           message: "Lấy token thành công",

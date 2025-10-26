@@ -106,9 +106,11 @@ const deleteUser = async (req, res) => {
 const getAllUsers = async (req, res) => {
   try {
     const { limit, page } = req.query;
+    // sort
     const resGetAll = await UserAdminService.getAllUsers(
-      Number(limit),
-      Number(page)
+      Number(limit) || 5,
+      Number(page) || 0
+      // sort
     );
     return res.status(200).json(resGetAll);
   } catch (e) {
