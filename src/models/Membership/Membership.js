@@ -17,6 +17,9 @@ const membershipSchema = new mongoose.Schema(
     endDate: { type: Date, required: true },
     renewalCount: { type: Number, default: 0 },
     remainingSessions: { type: Number, default: 0 },
+    autoRenew: { type: Boolean, default: false },
+    notificationSent: { type: Boolean, default: false },
+
     status: {
       type: String,
       enum: ["active", "expired", "pending"],

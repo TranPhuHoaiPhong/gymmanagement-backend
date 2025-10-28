@@ -27,4 +27,5 @@ healthInfoSchema.pre("save", function (next) {
   next();
 });
 
-module.exports = healthInfoSchema;
+const HealthInfo = mongoose.model("HealthInfo", healthInfoSchema);
+module.exports = HealthInfo;

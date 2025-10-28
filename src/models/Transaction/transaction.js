@@ -13,6 +13,11 @@ const transactionSchema = new mongoose.Schema(
       required: true,
     },
     membershipId: { type: mongoose.Schema.Types.ObjectId, ref: "Membership" },
+    transactionCode: {
+      type: String,
+      unique: true,
+      default: () => `TXN-${Date.now()}`,
+    },
 
     amount: { type: Number, required: true },
     paymentMethod: {
