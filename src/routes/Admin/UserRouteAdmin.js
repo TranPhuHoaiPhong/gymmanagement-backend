@@ -5,6 +5,7 @@ const {
   authenticate,
   authorizeRoles,
   authUserMiddleware,
+  authMiddleware,
 } = require("../../middlewares/authMiddleware/authMiddleware");
 
 /**
@@ -19,28 +20,13 @@ routes.post("/refresh-token", UserAdminController.refreshToken);
  */
 
 // Lấy danh sách tất cả user (chỉ Admin hoặc Staff)
-routes.get(
-  "/get-all-users",
-  // authenticate, nhớ bật khi test
-  // authorizeRoles("admin", "staff"),
-  UserAdminController.getAllUsers
-);
+routes.get("/get-all-users", authMiddleware, UserAdminController.getAllUsers);
 
 // Cập nhật thông tin user (Admin hoặc Staff)
-routes.put(
-  "/update-user/:id",
-  authenticate,
-  authorizeRoles("admin", "staff"),
-  UserAdminController.updateUser
-);
+routes.put("/update-user/:id", authMiddleware, UserAdminController.updateUser);
 
 // Xóa user (chỉ Admin)
-routes.put(
-  "/delete-user/:id",
-  authenticate,
-  authorizeRoles("admin"),
-  UserAdminController.deleteUser
-);
+routes.put("/delete-user/:id", authMiddleware, UserAdminController.deleteUser);
 
 //  Lấy chi tiết user (Admin hoặc chính user đó)
 routes.get(

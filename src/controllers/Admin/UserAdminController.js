@@ -82,7 +82,10 @@ const loginUser = async (req, res) => {
     const { refresh_Token, ...newResLogin } = resLogin;
     res.cookie("refresh_Token", refresh_Token, {
       httpOnly: true,
-      Secure: true,
+      Secure: false,
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngay
+      path: "/",
     });
     return res.status(200).json(newResLogin);
   } catch (e) {
@@ -172,16 +175,16 @@ const getDetailsUser = async (req, res) => {
 const refreshToken = async (req, res) => {
   console.log("req.cookies", req.cookies);
   try {
-    // const token = req.headers.token.split(" ")[1];
+    const token = req.headers.token.split(" ")[1];
 
-    // if (!token) {
-    //   return res.status(400).json({
-    //     status: "ERROR",
-    //     message: "Token khong hop le controller",
-    //   });
-    // }
-    // const resRefresh = await JwtService.refreshTokenJwtService(token);
-    // return res.status(200).json(resRefresh);
+    if (!token) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Token khong hop le controller",
+      });
+    }
+    const resRefresh = await JwtService.refreshTokenJwtService(token);
+    return res.status(200).json(resRefresh);
     return;
   } catch (e) {
     return res.status(404).json({
