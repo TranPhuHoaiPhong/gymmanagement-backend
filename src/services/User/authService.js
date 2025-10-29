@@ -118,6 +118,7 @@ async function loginUserService({ email, password }) {
         fullName: user.fullName,
         email: user.email,
         role: user.role,
+        healthInfo: user.healthInfo
       },
     };
 }

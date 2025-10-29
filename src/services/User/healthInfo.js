@@ -7,20 +7,37 @@ exports.updateOrCreateHealthInfo = async (userId, data) => {
 
   // Tìm user
   const user = await User.findById(userId);
-  if (!user) throw new Error("Không tìm thấy người dùng");
+  if (!user) {
+    return {
+        success: false,
+        message: "Không tìm thấy người dùng",
+      };
+  }
 
   let healthInfo;
 
   // Nếu user đã có healthInfo → cập nhật
   if (user.healthInfo) {
     healthInfo = await HealthInfo.findById(user.healthInfo);
-    if (!healthInfo) throw new Error("Không tìm thấy thông tin sức khỏe");
+    if (!healthInfo) {
+      return {
+        success: false,
+        message: "Không tìm thấy thông tin sức khỏe",
+      };
+    }
 
     healthInfo.height = height;
     healthInfo.weight = weight;
     healthInfo.medicalHistory = medicalHistory;
     healthInfo.fitnessGoal = fitnessGoal;
     await healthInfo.save();
+
+    return {
+      success: true,
+      message: "Cập nhật thông tin sức khỏe thành công",
+      data: healthInfo,
+    }
+
   } else {
     // Nếu chưa có → tạo mới
     healthInfo = new HealthInfo({
@@ -34,7 +51,11 @@ exports.updateOrCreateHealthInfo = async (userId, data) => {
     // Gán vào user
     user.healthInfo = healthInfo._id;
     await user.save();
-  }
 
-  return healthInfo;
+    return {
+      success: true,
+      message: "Tạo thông tin sức khỏe thành công",
+      data: healthInfo,
+    }
+  }
 };

@@ -155,6 +155,7 @@ const authUserApp = (req, res, next) => {
   }
 
   const token = authHeader.split(" ")[1];
+  
   jwt.verify(token, process.env.ACCCESS_TOKEN, function (err, decoded) {
     if (err) {
       return res.status(404).json({
@@ -180,4 +181,6 @@ module.exports = {
   authorizeRoles, // kiểm tra quyền động
   authMiddleware, // chỉ cho admin
   authUserMiddleware, // cho admin hoặc chính user
+  authUserApp, // xác thực cho app (member)
+
 };
