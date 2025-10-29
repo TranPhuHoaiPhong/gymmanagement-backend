@@ -145,6 +145,36 @@ const authUserMiddleware = (req, res, next) => {
   }
 };
 
+const authUserApp = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({
+      status: "ERROR",
+      message: "Token missing",
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, process.env.ACCCESS_TOKEN, function (err, decoded) {
+    if (err) {
+      return res.status(404).json({
+        status: "ERROR",
+        message: "Token khong hop le",
+      });
+    }
+
+
+    const { payload } = decoded;
+
+    req.userId = payload.id;
+    req.isAdmin = payload.isAdmin || false;
+
+    next();
+  });
+};
+
+
+ 
 module.exports = {
   authenticate, // xác thực chung
   authorizeRoles, // kiểm tra quyền động
