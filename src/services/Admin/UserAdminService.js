@@ -69,7 +69,6 @@ const loginUser = (userLogin) => {
         });
       }
 
-      // So sánh mật khẩu: password từ client vs passwordHash lưu trong DB
       const comparePassword = bcrypt.compareSync(
         passwordHash,
         checkUser.passwordHash
