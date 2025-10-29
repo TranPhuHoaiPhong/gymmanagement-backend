@@ -37,9 +37,6 @@ const createUser = (newUser) => {
           phone,
           passwordHash: hash,
           role,
-          isAdmin: role === "admin" ? true : false,
-          isStaff: role === "staff" ? true : false,
-          isTrainer: role === "trainer" ? true : false,
         });
 
         if (createdUser) {
@@ -59,49 +56,43 @@ const createUser = (newUser) => {
 const loginUser = (userLogin) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const {
-        fullName,
-        dateOfBirth,
-        gender,
-        email,
-        phone,
-        passwordHash,
-        role,
-      } = userLogin;
+      // Nhận password (mật khẩu thô từ client), không phải passwordHash
+      const { email, passwordHash } = userLogin;
 
-      const checkUser = await User.findOne({
-        email: email,
-      });
+      const checkUser = await User.findOne({ email: email });
 
+      // Nếu không tồn tại user
       if (checkUser === null) {
-        resolve({
+        return resolve({
           status: "ERROR",
           message: "Email khong ton tai",
         });
       }
 
-      const commparePassword = bcrypt.compareSync(
+      // So sánh mật khẩu: password từ client vs passwordHash lưu trong DB
+      const comparePassword = bcrypt.compareSync(
         passwordHash,
         checkUser.passwordHash
       );
 
-      if (!commparePassword) {
-        resolve({
+      if (!comparePassword) {
+        return resolve({
           status: "ERROR",
           message: "Mat khau khong dung",
         });
       } else {
+        // Tạo token (gửi role thay vì isAdmin)
         const access_Token = await genneralAccessToken({
           id: checkUser._id,
-          isAdmin: checkUser.isAdmin,
+          role: checkUser.role,
         });
 
         const refresh_Token = await genneralRefreshToken({
           id: checkUser._id,
-          isAdmin: checkUser.isAdmin,
+          role: checkUser.role,
         });
 
-        resolve({
+        return resolve({
           status: "OK",
           message: "Dang nhap thanh cong",
           access_Token,
@@ -109,6 +100,7 @@ const loginUser = (userLogin) => {
         });
       }
     } catch (e) {
+      console.error("Lỗi loginUser:", e);
       reject(e);
     }
   });
@@ -171,12 +163,17 @@ const deleteUser = (userId, data) => {
 };
 
 const getAllUsers = (limit, page) => {
+  // sort
+  // console.log("Sort query:", sort);
   return new Promise(async (resolve, reject) => {
     try {
       const totalUsers = await User.countDocuments();
       const users = await User.find()
         .limit(limit)
         .skip(page * limit);
+      // .sort({
+      //   fullName: sort,
+      // });
 
       resolve({
         status: "OK",
