@@ -4,15 +4,23 @@ const healthInfoSchema = new mongoose.Schema(
   {
     height: Number, // cm
     weight: Number, // kg
-    bmi: Number,
-    bodyFatPercent: Number,
-    muscleMass: Number,
-    waterPercent: Number,
+    bmi: Number,    // tính tự động
     medicalHistory: { type: [String], default: [] },
     fitnessGoal: {
       type: String,
-      enum: ["weight_loss", "muscle_gain", "endurance", "general"],
-      default: "general",
+      enum: [
+        "weight_loss",
+        "muscle_gain",
+        "endurance",
+        "general_health",
+        "fat_loss",
+        "flexibility",
+        "recovery",
+        "stress_relief",
+        "strength_training",
+        "athletic_performance"
+      ],
+      default: "general_health",
     },
   },
   { timestamps: true }
