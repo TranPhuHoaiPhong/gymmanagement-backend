@@ -173,7 +173,7 @@ const getDetailsUser = async (req, res) => {
 };
 
 const refreshToken = async (req, res) => {
-  console.log("req.cookies", req.cookies);
+  console.log("req.cookies", req.cookies.refreshToken);
   try {
     const token = req.headers.token.split(" ")[1];
 

@@ -39,12 +39,10 @@ const refreshTokenJwtService = async (token) => {
           });
         }
 
-        const { payload } = user;
-
         // Sinh lại access token mới dựa trên id và role trong payload
         const access_Token = genneralAccessToken({
-          id: payload?.id,
-          role: payload?.role,
+          id: user?.id,
+          role: user?.role,
         });
 
         return resolve({
