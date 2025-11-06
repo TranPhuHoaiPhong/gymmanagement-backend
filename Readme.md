@@ -61,3 +61,15 @@ Khi xóa tài khoản staff thì tài khoản sẽ từ "isActive": true thành 
 - Đổi mật khẩu: gmail => gửi mã => xác thực 
 - Đăng nhập : kiểm tra khóa tài khoản /
 - Token vào đăng nhập 
+
+notification: 
+- trước ngày tập
+- admin thông báo 
+- thông báo thanh toán/gia hạn
+
+mua gối => membermodel, khi quét mã qr sẽ tính checkin
+
+
+trainersession => khách đặt lịch vs pt, liên quan đến workout
+
+trainersession và membership => lấy ra ngày completed and missed
