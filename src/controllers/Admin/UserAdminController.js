@@ -82,7 +82,7 @@ const loginUser = async (req, res) => {
     const { refresh_Token, ...newResLogin } = resLogin;
     res.cookie("refresh_Token", refresh_Token, {
       httpOnly: true,
-      Secure: false,
+      secure: false,
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngay
       path: "/",
@@ -173,22 +173,47 @@ const getDetailsUser = async (req, res) => {
 };
 
 const refreshToken = async (req, res) => {
-  console.log("req.cookies", req.cookies.refreshToken);
   try {
-    const token = req.headers.token.split(" ")[1];
+    const token = req.cookies.refresh_Token;
 
     if (!token) {
       return res.status(400).json({
         status: "ERROR",
-        message: "Token khong hop le controller",
+        message:
+          "Token không hợp lệ (không tìm thấy refresh token trong cookie)",
       });
     }
+
     const resRefresh = await JwtService.refreshTokenJwtService(token);
-    return res.status(200).json(resRefresh);
-    return;
+
+    return res.status(200).json({
+      status: "SUCCESS",
+      ...resRefresh,
+    });
   } catch (e) {
-    return res.status(404).json({
-      message: e,
+    return res.status(500).json({
+      status: "ERROR",
+      message: e.message || e,
+    });
+  }
+};
+
+const logoutUser = async (req, res) => {
+  try {
+    res.clearCookie("refresh_Token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/",
+    });
+    return res.status(200).json({
+      status: "OK",
+      message: "Đăng xuất thành công",
+    });
+  } catch (e) {
+    return res.status(500).json({
+      status: "ERROR",
+      message: e.message || e,
     });
   }
 };
@@ -201,4 +226,5 @@ module.exports = {
   getAllUsers,
   getDetailsUser,
   refreshToken,
+  logoutUser,
 };
