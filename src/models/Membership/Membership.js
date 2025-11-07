@@ -16,6 +16,14 @@ const membershipSchema = new mongoose.Schema(
       enum: ["pending", "active", "expired", "cancelled"],
       default: "pending",
     },
+
+    // 🗓 Mảng lưu ngày đã check-in
+    checkInDates: [
+      {
+        date: { type: Date, required: true },
+        sessionId: { type: mongoose.Schema.Types.ObjectId, ref: "TrainerSession" },
+      }
+    ],
   },
   { timestamps: true }
 );

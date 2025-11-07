@@ -11,7 +11,10 @@ const packageSchema = new mongoose.Schema(
       enum: ["standard", "personal_trainer"],
       default: "standard",
     },
+    trainerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     sessionsWithTrainer: { type: Number, default: 0, min : 0 },
+    maxMembers: { type: Number, default: 30 },
+    registeredCount: { type: Number, default: 0, min: 0 },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
