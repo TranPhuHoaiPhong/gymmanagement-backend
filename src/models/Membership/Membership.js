@@ -1,7 +1,17 @@
+const mongoose = require("mongoose");
+
 const membershipSchema = new mongoose.Schema(
   {
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    packageId: { type: mongoose.Schema.Types.ObjectId, ref: "Package", required: true },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    packageId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Package",
+      required: true,
+    },
     trainerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // nếu là PT
 
     startDate: { type: Date, required: true, default: Date.now },
@@ -21,8 +31,11 @@ const membershipSchema = new mongoose.Schema(
     checkInDates: [
       {
         date: { type: Date, required: true },
-        sessionId: { type: mongoose.Schema.Types.ObjectId, ref: "TrainerSession" },
-      }
+        sessionId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "TrainerSession",
+        },
+      },
     ],
   },
   { timestamps: true }
