@@ -6,7 +6,7 @@ dotenv.config();
 const genneralAccessToken = (payload) => {
   const access_Token = jwt.sign(
     {
-      payload, // payload chứa id, role
+      ...payload, // payload chứa id, role
     },
     process.env.ACCCESS_TOKEN,
     { expiresIn: "30s" }
@@ -18,7 +18,7 @@ const genneralAccessToken = (payload) => {
 const genneralRefreshToken = (payload) => {
   const refresh_Token = jwt.sign(
     {
-      payload,
+      ...payload,
     },
     process.env.REFRESH_TOKEN,
     { expiresIn: "365d" }
@@ -28,35 +28,23 @@ const genneralRefreshToken = (payload) => {
 
 // Hàm làm mới access token
 const refreshTokenJwtService = async (token) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      jwt.verify(token, process.env.REFRESH_TOKEN, (err, user) => {
-        if (err) {
-          console.log("Lỗi verify refresh token:", err);
-          return resolve({
-            status: "ERROR",
-            message: "Token khong hop le service",
-          });
-        }
+  try {
+    const user = jwt.verify(token, process.env.REFRESH_TOKEN);
 
-        const { payload } = user;
+    const access_Token = genneralAccessToken({
+      id: user?.id,
+      role: user?.role,
+    });
 
-        // Sinh lại access token mới dựa trên id và role trong payload
-        const access_Token = genneralAccessToken({
-          id: payload?.id,
-          role: payload?.role,
-        });
-
-        return resolve({
-          status: "OK",
-          message: "Lấy token thành công",
-          access_Token,
-        });
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
+    return {
+      status: "OK",
+      message: "Lấy token thành công",
+      access_Token,
+    };
+  } catch (err) {
+    console.error("Lỗi verify refresh token:", err);
+    throw new Error("Token không hợp lệ hoặc đã hết hạn");
+  }
 };
 
 module.exports = {

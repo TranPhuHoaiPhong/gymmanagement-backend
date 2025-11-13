@@ -24,7 +24,7 @@ const authenticate = (req, res, next) => {
         });
       }
 
-      req.user = decoded.payload; // lưu user vào request để các middleware khác dùng
+      req.user = decoded; // lưu user vào request để các middleware khác dùng
       next();
     });
   } catch (error) {
@@ -82,10 +82,8 @@ const authMiddleware = (req, res, next) => {
         });
       }
 
-      const { payload } = decoded;
-
-      if (payload.role === "admin") {
-        req.user = payload; // lưu thông tin user vào req để các middleware sau dùng
+      if (decoded.role === "admin") {
+        req.user = decoded; // lưu thông tin user vào req để các middleware sau dùng
         next();
       } else {
         return res.status(403).json({
@@ -125,10 +123,8 @@ const authUserMiddleware = (req, res, next) => {
         });
       }
 
-      const { payload } = decoded;
-
-      if (payload.role === "admin" || payload._id == userId) {
-        req.user = payload;
+      if (decoded.role === "admin" || decoded._id == userId) {
+        req.user = decoded;
         next();
       } else {
         return res.status(403).json({
@@ -155,7 +151,7 @@ const authUserApp = (req, res, next) => {
   }
 
   const token = authHeader.split(" ")[1];
-  
+
   jwt.verify(token, process.env.ACCCESS_TOKEN, function (err, decoded) {
     if (err) {
       return res.status(404).json({
@@ -164,23 +160,17 @@ const authUserApp = (req, res, next) => {
       });
     }
 
-
-    const { payload } = decoded;
-
-    req.userId = payload.id;
-    req.isAdmin = payload.isAdmin || false;
+    req.userId = decoded.id;
+    req.isAdmin = decoded.isAdmin || false;
 
     next();
   });
 };
 
-
- 
 module.exports = {
   authenticate, // xác thực chung
   authorizeRoles, // kiểm tra quyền động
   authMiddleware, // chỉ cho admin
   authUserMiddleware, // cho admin hoặc chính user
   authUserApp, // xác thực cho app (member)
-
 };

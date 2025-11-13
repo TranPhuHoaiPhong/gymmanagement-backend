@@ -29,6 +29,7 @@ const workoutSchema = new mongoose.Schema(
   { timestamps: true }
 ); // tự tạo createdAt & updatedAt
 
-const Workout = mongoose.model("Workout", workoutSchema);
+const Workout =
+  mongoose.models.Workout || mongoose.model("Workout", workoutSchema);
 
 module.exports = Workout;

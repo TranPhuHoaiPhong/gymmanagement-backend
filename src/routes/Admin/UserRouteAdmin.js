@@ -13,6 +13,7 @@ const {
  */
 routes.post("/sign-up", UserAdminController.createUser);
 routes.post("/sign-in", UserAdminController.loginUser);
+routes.post("/log-out", UserAdminController.logoutUser);
 routes.post("/refresh-token", UserAdminController.refreshToken);
 
 /**
