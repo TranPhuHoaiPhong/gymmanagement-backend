@@ -58,6 +58,5 @@ membershipSchema.pre("save", async function (next) {
   }
   next();
 });
-const Membership = mongoose.model("Membership", membershipSchema);
-
-module.exports = Membership;
+module.exports =
+  mongoose.models.Membership || mongoose.model("Membership", membershipSchema);

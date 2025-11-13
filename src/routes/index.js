@@ -5,11 +5,13 @@ const UserRouteAdmin = require("./Admin/UserRouteAdmin");
 const PackageRouteAdmin = require("./Admin/PackageRouteAdmin");
 const RouteCustomer = require("./Customer/UserRouteCustomer");
 const MembershipRouteAdmin = require("./Admin/MembershipRouteAdmin");
+const TransactionshipRouteAdmin = require("./Admin/TransactionRouteAdmin");
 
 // Admin
 router.use("/user", UserRouteAdmin);
 router.use("/admin", PackageRouteAdmin);
 router.use("/admin", MembershipRouteAdmin);
+router.use("/admin", TransactionshipRouteAdmin);
 
 // Customer
 router.use("/customer", RouteCustomer);
