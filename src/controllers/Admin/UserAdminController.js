@@ -152,6 +152,18 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const getAllTrainers = async (req, res) => {
+  try {
+    console.log("Get all trainers controller");
+    const resGetAll = await UserAdminService.getAllTrainers();
+    return res.status(200).json(resGetAll);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const getDetailsUser = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -227,4 +239,5 @@ module.exports = {
   getDetailsUser,
   refreshToken,
   logoutUser,
+  getAllTrainers
 };

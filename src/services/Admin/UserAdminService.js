@@ -188,6 +188,24 @@ const getAllUsers = (limit, page) => {
   });
 };
 
+const getAllTrainers = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const users = await User.find({
+        role: "trainer",
+      })
+
+      resolve({
+        status: "OK",
+        message: "Lấy danh sách thành công",
+        data: users,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const getDetailsUser = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -219,4 +237,5 @@ module.exports = {
   deleteUser,
   getAllUsers,
   getDetailsUser,
+  getAllTrainers
 };
