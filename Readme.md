@@ -69,7 +69,6 @@ notification:
 
 mua gối => membermodel, khi quét mã qr sẽ tính checkin
 
-
 trainersession => khách đặt lịch vs pt, liên quan đến workout
 
 trainersession và membership => lấy ra ngày completed and missed
