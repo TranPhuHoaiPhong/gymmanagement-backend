@@ -82,6 +82,112 @@ const createTransaction = (newTransaction) => {
   });
 };
 
+const updateTransaction = (transactionId, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkTransaction = await Transaction.findById(
+        transactionId
+      ).populate("membershipId packageId");
+
+      if (!checkTransaction) {
+        return resolve({
+          status: "ERROR",
+          message: "Giao dịch không tồn tại.",
+        });
+      }
+
+      const { status, paymentMethod } = data;
+
+      // Nếu có cập nhật trạng thái
+      if (status) {
+        // Ngăn sửa giao dịch đã hoàn tất
+        if (checkTransaction.status === "completed") {
+          return resolve({
+            status: "ERROR",
+            message: "Giao dịch đã hoàn tất, không thể chỉnh sửa.",
+          });
+        }
+
+        checkTransaction.status = status;
+
+        // Nếu giao dịch chuyển sang completed
+        if (status === "completed" && checkTransaction.membershipId) {
+          const membership = checkTransaction.membershipId;
+          membership.status = "active";
+          await membership.save();
+
+          // Tăng số lượng đăng ký của gói
+          const pkg = checkTransaction.packageId;
+          pkg.registeredCount = (pkg.registeredCount || 0) + 1;
+          await pkg.save();
+        }
+      }
+
+      // Nếu có cập nhật phương thức thanh toán
+      if (paymentMethod) {
+        checkTransaction.paymentMethod = paymentMethod;
+      }
+
+      // Lưu lại các thay đổi
+      const updatedTransaction = await checkTransaction.save();
+
+      resolve({
+        status: "OK",
+        message: "Cập nhật giao dịch thành công.",
+        data: updatedTransaction,
+      });
+    } catch (e) {
+      console.error("Lỗi updateTransaction:", e);
+      reject(e);
+    }
+  });
+};
+
+const getAllTransactions = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const getAllTransactions = await Transaction.find();
+
+      resolve({
+        status: "OK",
+        message: "Lấy tất cả giao dịch thành công.",
+        data: getAllTransactions,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getDetailsTransaction = (transactionId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkTransaction = await Transaction.findOne({
+        _id: transactionId,
+      });
+
+      if (!checkTransaction) {
+        return resolve({
+          status: "ERROR",
+          message: "Giao dịch không tồn tại.",
+        });
+      } else {
+        resolve({
+          status: "OK",
+          message: "Lấy chi tiết giao dịch thành công.",
+          data: checkTransaction,
+        });
+      }
+    } catch (e) {
+      console.error("Lỗi updateTransaction:", e);
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createTransaction,
+  updateTransaction,
+  getAllTransactions,
+  getDetailsTransaction,
 };
