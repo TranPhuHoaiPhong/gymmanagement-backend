@@ -72,6 +72,73 @@ const createMembership = (newMembership) => {
   });
 };
 
+
+const paymentMembership = (newMembership) => {
+  return new Promise(async (resolve, reject) => {
+    console.log("Payment membership function called with:");
+    try {
+      const { packageId, userId, trainerId } = newMembership;
+
+      const packageData = await Package.findById(packageId);
+      if (!packageData) {
+        return resolve({
+          status: "ERROR",
+          message: "Gói tập không tồn tại",
+        });
+      }
+
+       if (!packageData.isActive) {
+        return { status: "ERROR", message: "Gói tập hiện không hoạt động" };
+      }
+
+      if(packageData.registeredCount >= packageData.maxMembers) { 
+        return resolve({
+          status: "ERROR",
+          message: "Gói tập đã đạt số lượng thành viên tối đa",
+        });
+      }
+
+      // const existingMembership = await Membership.findOne({
+      //   userId,
+      //   packageId,
+      //   status: "active",
+      // });
+
+      // if (existingMembership) {
+      //   return resolve({
+      //     status: "ERROR",
+      //     message: "Bạn đã mua gói này rồi và đang còn hiệu lực",
+      //   });
+      // }
+
+      const membership = new Membership({
+        userId: userId,
+        packageId: packageId,
+        trainerId: trainerId || null,
+        status: "active",
+      });
+      await membership.save(); // pre("save") tính endDate và remainingSessions
+
+      packageData.registeredCount += 1;
+      await packageData.save();
+
+    
+      resolve({
+        status: "OK",
+        message: "Tạo membership thành công",
+        data: membership,
+      });
+
+    } catch (error) {
+      console.error("Lỗi trong createMembership:", error);
+      reject({
+        status: "ERROR",
+        message: "Lỗi máy chủ khi tạo membership",
+      });
+    }
+  });
+};
+
 const updateMembership = (membershipId, data) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -181,4 +248,5 @@ module.exports = {
   deleteMembership,
   getAllMembership,
   getDetailsMembership,
+  paymentMembership,
 };

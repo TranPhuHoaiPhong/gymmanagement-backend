@@ -3,6 +3,8 @@ const routes = express.Router();
 const MembershipAdminController = require("../../controllers/Admin/MembershipAdminController");
 
 routes.post("/create-membership", MembershipAdminController.createMembership);
+// Thanh toán Online Membership
+routes.post("/payment-membership", MembershipAdminController.paymentMembership);
 routes.post(
   "/update-membership/:id",
   MembershipAdminController.updateMembership

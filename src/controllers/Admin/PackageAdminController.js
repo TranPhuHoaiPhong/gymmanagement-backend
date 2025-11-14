@@ -94,7 +94,6 @@ const deletePackage = async (req, res) => {
 const getAllPackages = async (req, res) => {
   try {
     const resPackage = await PackageAdminService.getAllPackages();
-    console.log("resPackage:", resPackage);
     return res.status(200).json(resPackage);
   } catch (error) {
     console.error("Lỗi sửa package:", error);

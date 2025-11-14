@@ -118,10 +118,39 @@ const getDetailsMembership = async (req, res) => {
   }
 };
 
+const paymentMembership = async (req, res) => {
+  try {
+    const { userId, packageId } =
+      req.body;
+
+    if (!userId || !packageId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Thiếu thông tin cần thiết",
+      });
+    }
+
+    const resCreate = await MembershipAdminService.paymentMembership(
+      req.body
+    );
+
+    console.log("Response from paymentMembership:", resCreate);
+
+    return res.status(200).json(resCreate);
+  } catch (error) {
+    console.error("Lỗi tạo membership:", error);
+    return res.status(500).json({
+      status: "ERROR",
+      message: "Lỗi máy chủ, vui lòng thử lại sau",
+    });
+  }
+};
+
 module.exports = {
   createMembership,
   updateMembership,
   deleteMembership,
   getAllMembership,
   getDetailsMembership,
+  paymentMembership,
 };
