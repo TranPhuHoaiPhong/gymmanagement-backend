@@ -1,6 +1,7 @@
 const express = require("express");
 const routes = express.Router();
 const packageAdminController = require("../../controllers/Admin/PackageAdminController");
+const { authUserMiddleware } = require("../../middlewares/authMiddleware/authMiddleware");
 
 routes.post("/create-package", packageAdminController.createPackage);
 routes.post("/update-package/:id", packageAdminController.updatePackage);

@@ -131,7 +131,9 @@ const deletePackage = (packageId) => {
 const getAllPackages = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const getPackage = await Package.find();
+      const getPackage = await Package.find()      
+        .populate("trainerId", "fullName")
+        .lean();
 
       resolve({
         status: "OK",
