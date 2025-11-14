@@ -8,6 +8,7 @@ const MembershipRouteAdmin = require("./Admin/MembershipRouteAdmin");
 const TransactionshipRouteAdmin = require("./Admin/TransactionRouteAdmin");
 const WorkoutRouteAdmin = require("./Admin/WorkoutRouteAdmin");
 const TrainerSessionRouteAdmin = require("./Admin/TrainerSessionRouteAdmin");
+const ReviewRouteAdmin = require("./Admin/ReviewRouteAdmin");
 
 // Admin
 router.use("/user", UserRouteAdmin);
@@ -16,6 +17,7 @@ router.use("/admin", MembershipRouteAdmin);
 router.use("/admin", TransactionshipRouteAdmin);
 router.use("/admin", WorkoutRouteAdmin);
 router.use("/admin", TrainerSessionRouteAdmin);
+router.use("/admin", ReviewRouteAdmin);
 
 // Customer
 router.use("/customer", RouteCustomer);

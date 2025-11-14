@@ -87,6 +87,74 @@ const createTrainerSession = (newTrainerSession) => {
   });
 };
 
+const updateTrainerSession = (trainersessionId, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkId = await TrainerSession.findById(trainersessionId);
+      if (!checkId) {
+        return resolve({
+          status: "ERROR",
+          message: "Trainersession không tồn tại.",
+        });
+      }
+
+      const updatedTrainerSession = await TrainerSession.findByIdAndUpdate(
+        trainersessionId,
+        data,
+        { new: true }
+      );
+
+      resolve({
+        status: "OK",
+        message: "Cập nhật Trainersession thành công.",
+        data: updatedTrainerSession,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getAllTrainerSessions = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const allSessions = await TrainerSession.find();
+      resolve({
+        status: "OK",
+        message: "Lấy tất cả Trainersessions thành công.",
+        data: allSessions,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getDetailsTrainerSession = (trainersessionId, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkId = await TrainerSession.findById(trainersessionId);
+      if (!checkId) {
+        return resolve({
+          status: "ERROR",
+          message: "Trainersession không tồn tại.",
+        });
+      }
+
+      resolve({
+        status: "OK",
+        message: "Lấy chi tiết Trainersession thành công.",
+        data: checkId,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createTrainerSession,
+  updateTrainerSession,
+  getAllTrainerSessions,
+  getDetailsTrainerSession,
 };
