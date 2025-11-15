@@ -72,7 +72,6 @@ const createMembership = (newMembership) => {
   });
 };
 
-
 const paymentMembership = (newMembership) => {
   return new Promise(async (resolve, reject) => {
     console.log("Payment membership function called with:");
@@ -220,20 +219,57 @@ const getAllMembership = () => {
 const getDetailsMembership = (membershipId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkMembership = await Membership.findOne({
-        _id: membershipId,
-      });
+      const checkMembership = await Membership.find({
+        userId: membershipId,
+      })
+        .populate("userId", "fullName email") // Lấy thông tin user
+        .populate("packageId", "name price type sessionsWithTrainer") // Lấy thông tin package
+        .populate("trainerId", "fullName email"); // Lấy thông tin trainer nếu có
 
       if (checkMembership === null) {
         resolve({
           status: "ERROR",
           message: "Membership khong ton tai",
         });
-      } else {
+      } 
+
+
+      else {
         resolve({
           status: "OK",
           message: "Lấy thông tin thành công",
           data: checkMembership,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getCurrentMembership = (membershipId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkMembership = await Membership.find({
+        userId: membershipId,
+      })
+        .populate("userId", "fullName email") // Lấy thông tin user
+        .populate("packageId", "name price type sessionsWithTrainer") // Lấy thông tin package
+        .populate("trainerId", "fullName email") // Lấy thông tin trainer nếu có
+        .sort({ endDate: -1 })
+        .limit(1);
+
+      if (checkMembership === null) {
+        resolve({
+          status: "ERROR",
+          message: "Membership khong ton tai",
+        });
+      } 
+      else {
+        resolve({
+          status: "OK",
+          message: "Lấy thông tin thành công",
+          data: checkMembership[0],
         });
       }
     } catch (e) {
@@ -249,4 +285,5 @@ module.exports = {
   getAllMembership,
   getDetailsMembership,
   paymentMembership,
+  getCurrentMembership,
 };

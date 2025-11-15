@@ -18,5 +18,9 @@ routes.get(
   "/get-details-membership/:id",
   MembershipAdminController.getDetailsMembership
 );
+routes.get(
+  "/get-details-current-membership/:id",
+  MembershipAdminController.getCurrentMembership
+);
 
 module.exports = routes;
