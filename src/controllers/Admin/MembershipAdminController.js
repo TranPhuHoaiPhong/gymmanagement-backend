@@ -5,6 +5,7 @@ const createMembership = async (req, res) => {
     const { userId, packageId, startDate, trainerId, autoRenew, status } =
       req.body;
 
+
     if (!userId || !packageId || !startDate) {
       return res.status(400).json({
         status: "ERROR",
@@ -118,6 +119,30 @@ const getDetailsMembership = async (req, res) => {
   }
 };
 
+const getCurrentMembership = async (req, res) => {
+  try {
+    const membershipId = req.params.id;
+
+    if (!membershipId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "membershipId không hợp lệ",
+      });
+    }
+
+    const resGetDetails = await MembershipAdminService.getCurrentMembership(
+      membershipId
+    );
+    return res.status(200).json(resGetDetails);
+  } catch (error) {
+    console.error("Lỗi lấy membership:", error);
+    return res.status(500).json({
+      status: "ERROR",
+      message: "Lỗi máy chủ, vui lòng thử lại sau",
+    });
+  }
+};
+
 const paymentMembership = async (req, res) => {
   try {
     const { userId, packageId } =
@@ -144,7 +169,8 @@ const paymentMembership = async (req, res) => {
       message: "Lỗi máy chủ, vui lòng thử lại sau",
     });
   }
-};
+}; 
+
 
 module.exports = {
   createMembership,
@@ -153,4 +179,5 @@ module.exports = {
   getAllMembership,
   getDetailsMembership,
   paymentMembership,
+  getCurrentMembership,
 };
