@@ -16,37 +16,52 @@ const createUser = (newUser) => {
         phone,
         passwordHash,
         role,
+        avatarUrl,
       } = newUser;
 
-      const checkUser = await User.findOne({
-        email: email,
+      const checkUser = await User.findOne({ email });
+      if (checkUser !== null) {
+        return resolve({ status: "ERROR", message: "Email đã tồn tại" });
+      }
+
+      const checkPhone = await User.findOne({ phone });
+      if (checkPhone) {
+        return resolve({
+          status: "ERROR",
+          message: "Số điện thoại đã tồn tại",
+        });
+      }
+
+      const dob = new Date(dateOfBirth);
+      if (isNaN(dob.getTime())) {
+        return resolve({ status: "ERROR", message: "Ngày sinh không hợp lệ" });
+      }
+      const today = new Date();
+      if (dob > today) {
+        return resolve({
+          status: "ERROR",
+          message: "Ngày sinh không được ở tương lai",
+        });
+      }
+
+      const hash = bcrypt.hashSync(passwordHash, 10);
+
+      const createdUser = await User.create({
+        fullName,
+        dateOfBirth: dob,
+        gender,
+        email,
+        phone,
+        passwordHash: hash,
+        role,
+        avatarUrl,
       });
 
-      if (checkUser !== null) {
-        resolve({
-          status: "ERROR",
-          message: "Email da ton tai",
-        });
-      } else {
-        const hash = bcrypt.hashSync(passwordHash, 10);
-        const createdUser = await User.create({
-          fullName,
-          dateOfBirth,
-          gender,
-          email,
-          phone,
-          passwordHash: hash,
-          role,
-        });
-
-        if (createdUser) {
-          resolve({
-            status: "OK",
-            message: "SUCCESS",
-            data: createdUser,
-          });
-        }
-      }
+      return resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: createdUser,
+      });
     } catch (e) {
       reject(e);
     }
@@ -193,7 +208,25 @@ const getAllTrainers = () => {
     try {
       const users = await User.find({
         role: "trainer",
-      })
+      });
+
+      resolve({
+        status: "OK",
+        message: "Lấy danh sách thành công",
+        data: users,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getAllMembers = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const users = await User.find({
+        role: "member",
+      });
 
       resolve({
         status: "OK",
@@ -237,5 +270,6 @@ module.exports = {
   deleteUser,
   getAllUsers,
   getDetailsUser,
-  getAllTrainers
+  getAllTrainers,
+  getAllMembers,
 };

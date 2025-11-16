@@ -23,6 +23,13 @@ routes.post("/refresh-token", UserAdminController.refreshToken);
 // Lấy danh sách tất cả user (chỉ Admin hoặc Staff)
 routes.get("/get-all-users", authMiddleware, UserAdminController.getAllUsers);
 
+// Lấy danh sách tất cả user (chỉ Admin hoặc Staff)
+routes.get(
+  "/get-all-members",
+  authMiddleware,
+  UserAdminController.getAllMembers
+);
+
 // Lấy danh sách tất cả trainer  getAllTrainers
 routes.get("/get-all-trainers", UserAdminController.getAllTrainers);
 

@@ -3,8 +3,16 @@ const JwtService = require("../../services/JwtService/JwtService");
 
 const createUser = async (req, res) => {
   try {
-    const { fullName, dateOfBirth, gender, email, phone, passwordHash, role } =
-      req.body;
+    const {
+      fullName,
+      dateOfBirth,
+      gender,
+      email,
+      phone,
+      passwordHash,
+      role,
+      avatarUrl,
+    } = req.body;
 
     // Kiểm tra định dạng
     const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -49,6 +57,7 @@ const createUser = async (req, res) => {
       phone,
       passwordHash,
       role,
+      avatarUrl,
     });
 
     return res.status(200).json(resCreate);
@@ -164,6 +173,17 @@ const getAllTrainers = async (req, res) => {
   }
 };
 
+const getAllMembers = async (req, res) => {
+  try {
+    const resGetAll = await UserAdminService.getAllMembers();
+    return res.status(200).json(resGetAll);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const getDetailsUser = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -239,5 +259,6 @@ module.exports = {
   getDetailsUser,
   refreshToken,
   logoutUser,
-  getAllTrainers
+  getAllTrainers,
+  getAllMembers,
 };
