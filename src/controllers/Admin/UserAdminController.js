@@ -250,6 +250,33 @@ const logoutUser = async (req, res) => {
   }
 };
 
+const uploadAvatar = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Không có file tải lên" });
+    }
+
+    const userId = req.params.id;
+
+    if (!userId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "UserId không hợp lệ",
+      });
+    }
+
+    const result = await UserAdminService.uploadAvatar(userId, req.file);
+
+    return res.status(200).json(result);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({
+      status: "ERROR",
+      message: "Lỗi server",
+    });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -261,4 +288,5 @@ module.exports = {
   logoutUser,
   getAllTrainers,
   getAllMembers,
+  uploadAvatar,
 };

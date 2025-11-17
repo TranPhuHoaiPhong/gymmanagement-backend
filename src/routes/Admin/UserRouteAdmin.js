@@ -7,6 +7,7 @@ const {
   authUserMiddleware,
   authMiddleware,
 } = require("../../middlewares/authMiddleware/authMiddleware");
+const upload = require("../../middlewares/upload");
 
 /**
  * Public routes (không cần token)
@@ -23,7 +24,8 @@ routes.post("/refresh-token", UserAdminController.refreshToken);
 // Lấy danh sách tất cả user (chỉ Admin hoặc Staff)
 routes.get("/get-all-users", authMiddleware, UserAdminController.getAllUsers);
 
-// Lấy danh sách tất cả user (chỉ Admin hoặc Staff)
+routes.post("/create-member", authMiddleware, UserAdminController.createUser);
+
 routes.get(
   "/get-all-members",
   authMiddleware,
@@ -34,7 +36,7 @@ routes.get(
 routes.get("/get-all-trainers", UserAdminController.getAllTrainers);
 
 // Cập nhật thông tin user (Admin hoặc Staff)
-routes.put("/update-user/:id", authMiddleware, UserAdminController.updateUser);
+routes.post("/update-user/:id", authMiddleware, UserAdminController.updateUser);
 
 // Xóa user (chỉ Admin)
 routes.put("/delete-user/:id", authMiddleware, UserAdminController.deleteUser);
@@ -44,6 +46,13 @@ routes.get(
   "/get-details-user/:id",
   authUserMiddleware,
   UserAdminController.getDetailsUser
+);
+
+routes.post(
+  "/upload-avatar/:id",
+  upload.single("avatar"),
+  authMiddleware,
+  UserAdminController.uploadAvatar
 );
 
 module.exports = routes;

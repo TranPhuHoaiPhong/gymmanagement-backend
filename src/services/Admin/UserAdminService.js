@@ -263,6 +263,39 @@ const getDetailsUser = (userId) => {
   });
 };
 
+const uploadAvatar = async (userId, file) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await User.findById(userId);
+
+      if (!user) {
+        return resolve({
+          status: "ERROR",
+          message: "User không tồn tại",
+        });
+      }
+
+      // Convert path thành URL public
+      const fileName = file.filename;
+      const avatarUrl = `/images/avatar/${fileName}`;
+
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { avatarUrl },
+        { new: true }
+      );
+
+      resolve({
+        status: "OK",
+        message: "Upload avatar thành công",
+        data: updatedUser,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -272,4 +305,5 @@ module.exports = {
   getDetailsUser,
   getAllTrainers,
   getAllMembers,
+  uploadAvatar,
 };
