@@ -33,7 +33,16 @@ routes.get(
 );
 
 // Lấy danh sách tất cả trainer  getAllTrainers
-routes.get("/get-all-trainers", UserAdminController.getAllTrainers);
+routes.get(
+  "/get-all-trainers",
+  authMiddleware,
+  UserAdminController.getAllTrainers
+);
+
+routes.post("/create-trainer", authMiddleware, UserAdminController.createUser);
+
+// Lấy danh sách tất cả staff
+routes.get("/get-all-staffs", authMiddleware, UserAdminController.getAllStaffs);
 
 // Cập nhật thông tin user (Admin hoặc Staff)
 routes.post("/update-user/:id", authMiddleware, UserAdminController.updateUser);

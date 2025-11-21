@@ -163,7 +163,6 @@ const getAllUsers = async (req, res) => {
 
 const getAllTrainers = async (req, res) => {
   try {
-    console.log("Get all trainers controller");
     const resGetAll = await UserAdminService.getAllTrainers();
     return res.status(200).json(resGetAll);
   } catch (e) {
@@ -176,6 +175,17 @@ const getAllTrainers = async (req, res) => {
 const getAllMembers = async (req, res) => {
   try {
     const resGetAll = await UserAdminService.getAllMembers();
+    return res.status(200).json(resGetAll);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const getAllStaffs = async (req, res) => {
+  try {
+    const resGetAll = await UserAdminService.getAllStaffs();
     return res.status(200).json(resGetAll);
   } catch (e) {
     return res.status(404).json({
@@ -289,4 +299,5 @@ module.exports = {
   getAllTrainers,
   getAllMembers,
   uploadAvatar,
+  getAllStaffs,
 };

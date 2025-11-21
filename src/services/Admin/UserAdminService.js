@@ -239,6 +239,24 @@ const getAllMembers = () => {
   });
 };
 
+const getAllStaffs = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const users = await User.find({
+        role: "staff",
+      });
+
+      resolve({
+        status: "OK",
+        message: "Lấy danh sách thành công",
+        data: users,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const getDetailsUser = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -306,4 +324,5 @@ module.exports = {
   getAllTrainers,
   getAllMembers,
   uploadAvatar,
+  getAllStaffs,
 };
