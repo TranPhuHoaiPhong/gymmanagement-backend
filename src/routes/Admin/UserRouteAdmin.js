@@ -50,7 +50,18 @@ routes.post("/update-user/:id", authMiddleware, UserAdminController.updateUser);
 // Xóa user (chỉ Admin)
 routes.put("/delete-user/:id", authMiddleware, UserAdminController.deleteUser);
 
-//  Lấy chi tiết user (Admin hoặc chính user đó)
+routes.get(
+  "/get-details-trainer/:id",
+  authMiddleware,
+  UserAdminController.getDetailsTrainer
+);
+
+routes.get(
+  "/get-details-member/:id",
+  authMiddleware,
+  UserAdminController.getDetailsMember
+);
+
 routes.get(
   "/get-details-user/:id",
   authUserMiddleware,

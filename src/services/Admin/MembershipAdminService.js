@@ -86,11 +86,11 @@ const paymentMembership = (newMembership) => {
         });
       }
 
-       if (!packageData.isActive) {
+      if (!packageData.isActive) {
         return { status: "ERROR", message: "Gói tập hiện không hoạt động" };
       }
 
-      if(packageData.registeredCount >= packageData.maxMembers) { 
+      if (packageData.registeredCount >= packageData.maxMembers) {
         return resolve({
           status: "ERROR",
           message: "Gói tập đã đạt số lượng thành viên tối đa",
@@ -121,13 +121,11 @@ const paymentMembership = (newMembership) => {
       packageData.registeredCount += 1;
       await packageData.save();
 
-    
       resolve({
         status: "OK",
         message: "Tạo membership thành công",
         data: membership,
       });
-
     } catch (error) {
       console.error("Lỗi trong createMembership:", error);
       reject({
@@ -203,7 +201,10 @@ const deleteMembership = (membershipId) => {
 const getAllMembership = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const getAllMemberships = await Membership.find();
+      const getAllMemberships = await Membership.find()
+        .populate("userId", "fullName email phone avatarUrl dateOfBirth gender")
+        .populate("packageId", "name type durationInDays price description")
+        .populate("trainerId", "fullName email phone");
 
       resolve({
         status: "OK",
@@ -231,10 +232,7 @@ const getDetailsMembership = (membershipId) => {
           status: "ERROR",
           message: "Membership khong ton tai",
         });
-      } 
-
-
-      else {
+      } else {
         resolve({
           status: "OK",
           message: "Lấy thông tin thành công",
@@ -264,8 +262,7 @@ const getCurrentMembership = (membershipId) => {
           status: "ERROR",
           message: "Membership khong ton tai",
         });
-      } 
-      else {
+      } else {
         resolve({
           status: "OK",
           message: "Lấy thông tin thành công",

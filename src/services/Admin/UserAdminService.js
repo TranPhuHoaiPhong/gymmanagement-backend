@@ -281,6 +281,68 @@ const getDetailsUser = (userId) => {
   });
 };
 
+const getDetailsTrainer = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkUser = await User.findOne({
+        _id: userId,
+      });
+      if (checkUser === null) {
+        return resolve({
+          status: "ERROR",
+          message: "User khong ton tai",
+        });
+      }
+
+      if (checkUser.role !== "trainer") {
+        return resolve({
+          status: "ERROR",
+          message: "User khong phai la trainer",
+        });
+      }
+
+      resolve({
+        status: "OK",
+        message: "Lấy thông tin thành công",
+        data: checkUser,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getDetailsMember = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkUser = await User.findOne({
+        _id: userId,
+      });
+      if (checkUser === null) {
+        return resolve({
+          status: "ERROR",
+          message: "User khong ton tai",
+        });
+      }
+
+      if (checkUser.role !== "member") {
+        return resolve({
+          status: "ERROR",
+          message: "User khong phai la member",
+        });
+      }
+
+      resolve({
+        status: "OK",
+        message: "Lấy thông tin thành công",
+        data: checkUser,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const uploadAvatar = async (userId, file) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -325,4 +387,6 @@ module.exports = {
   getAllMembers,
   uploadAvatar,
   getAllStaffs,
+  getDetailsTrainer,
+  getDetailsMember,
 };

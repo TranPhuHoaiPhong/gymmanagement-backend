@@ -12,7 +12,7 @@ const membershipSchema = new mongoose.Schema(
       ref: "Package",
       required: true,
     },
-    trainerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // nếu là PT
+    trainerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 
     startDate: { type: Date, required: true, default: Date.now },
     endDate: { type: Date },
@@ -27,7 +27,6 @@ const membershipSchema = new mongoose.Schema(
       default: "pending",
     },
 
-    // 🗓 Mảng lưu ngày đã check-in
     checkInDates: [
       {
         date: { type: Date, required: true },
@@ -41,7 +40,6 @@ const membershipSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Tự động tính endDate dựa vào package
 membershipSchema.pre("save", async function (next) {
   if (!this.endDate && this.packageId) {
     const Package = mongoose.model("Package");
@@ -50,7 +48,6 @@ membershipSchema.pre("save", async function (next) {
       const end = new Date(this.startDate);
       end.setDate(end.getDate() + pkg.durationInDays);
       this.endDate = end;
-      // Nếu có PT sessions thì set remainingSessions
       if (pkg.type === "personal_trainer") {
         this.remainingSessions = pkg.sessionsWithTrainer;
       }

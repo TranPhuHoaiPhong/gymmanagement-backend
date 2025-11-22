@@ -214,6 +214,46 @@ const getDetailsUser = async (req, res) => {
   }
 };
 
+const getDetailsTrainer = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    if (!userId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "UserId khong hop le",
+      });
+    }
+
+    const resDetails = await UserAdminService.getDetailsTrainer(userId);
+    return res.status(200).json(resDetails);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const getDetailsMember = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    if (!userId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "UserId khong hop le",
+      });
+    }
+
+    const resDetails = await UserAdminService.getDetailsMember(userId);
+    return res.status(200).json(resDetails);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const refreshToken = async (req, res) => {
   try {
     const token = req.cookies.refresh_Token;
@@ -300,4 +340,6 @@ module.exports = {
   getAllMembers,
   uploadAvatar,
   getAllStaffs,
+  getDetailsTrainer,
+  getDetailsMember,
 };
