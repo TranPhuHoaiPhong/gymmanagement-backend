@@ -27,4 +27,10 @@ routes.get(
   packageAdminController.getDetailsPackage
 );
 
+routes.get(
+  "/search-package",
+  authMiddleware,
+  packageAdminController.searchPackages
+);
+
 module.exports = routes;

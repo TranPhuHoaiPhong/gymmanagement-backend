@@ -131,7 +131,7 @@ const deletePackage = (packageId) => {
 const getAllPackages = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      const getPackage = await Package.find()      
+      const getPackage = await Package.find()
         .populate("trainerId", "fullName")
         .lean();
 
@@ -171,10 +171,85 @@ const getDetailsPackage = (packageId) => {
   });
 };
 
+const searchPackages = (data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const {
+        name,
+        type,
+        isActive,
+        minPrice,
+        maxPrice,
+        minDuration,
+        maxDuration,
+        trainerId,
+      } = data;
+
+      const filters = {};
+
+      // Tìm theo tên (Không phân biệt hoa thường)
+      if (name) {
+        filters.name = { $regex: name, $options: "i" };
+      }
+
+      // Loại gói: standard | personal_trainer
+      if (type) {
+        filters.type = type;
+      }
+
+      // Trạng thái
+      if (isActive === "true") filters.isActive = true;
+      if (isActive === "false") filters.isActive = false;
+
+      // Giá tối thiểu
+      if (minPrice) {
+        filters.price = { ...filters.price, $gte: Number(minPrice) };
+      }
+
+      // Giá tối đa
+      if (maxPrice) {
+        filters.price = { ...filters.price, $lte: Number(maxPrice) };
+      }
+
+      // Duration min
+      if (minDuration) {
+        filters.durationInDays = {
+          ...filters.durationInDays,
+          $gte: Number(minDuration),
+        };
+      }
+
+      // Duration max
+      if (maxDuration) {
+        filters.durationInDays = {
+          ...filters.durationInDays,
+          $lte: Number(maxDuration),
+        };
+      }
+
+      // Lọc theo trainer (chỉ PT packages)
+      if (trainerId) {
+        filters.trainerId = trainerId;
+      }
+
+      const searchPackages = await Package.find(filters);
+
+      resolve({
+        status: "OK",
+        message: "Tìm kiếm thành công",
+        data: searchPackages,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createPackage,
   updatePackage,
   deletePackage,
   getAllPackages,
   getDetailsPackage,
+  searchPackages,
 };

@@ -90,7 +90,7 @@ const deletePackage = async (req, res) => {
     });
   }
 };
- 
+
 const getAllPackages = async (req, res) => {
   try {
     const resPackage = await PackageAdminService.getAllPackages();
@@ -127,10 +127,27 @@ const getDetailsPackage = async (req, res) => {
   }
 };
 
+const searchPackages = async (req, res) => {
+  try {
+    const data = req.query;
+
+    const resPackage = await PackageAdminService.searchPackages(data);
+
+    return res.status(200).json(resPackage);
+  } catch (error) {
+    console.error("Lỗi tìm kiếm package:", error);
+    return res.status(500).json({
+      status: "ERROR",
+      message: "Lỗi máy chủ, vui lòng thử lại sau",
+    });
+  }
+};
+
 module.exports = {
   createPackage,
   updatePackage,
   deletePackage,
   getAllPackages,
   getDetailsPackage,
+  searchPackages,
 };
