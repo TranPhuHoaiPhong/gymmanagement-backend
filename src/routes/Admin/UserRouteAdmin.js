@@ -35,7 +35,7 @@ routes.get(
 // Lấy danh sách tất cả trainer  getAllTrainers
 routes.get(
   "/get-all-trainers",
-  authMiddleware,
+  // authMiddleware,
   UserAdminController.getAllTrainers
 );
 
