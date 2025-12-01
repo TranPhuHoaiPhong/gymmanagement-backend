@@ -3,5 +3,9 @@ const routes = express.Router();
 const CheckInLogAdminController = require("../../controllers/Admin/CheckInLogAdminController");
 
 routes.get("/get-all-checkinlogs", CheckInLogAdminController.getAllCheckInLogs);
+routes.get(
+  "/:sessionId/members",
+  CheckInLogAdminController.getMembersBySession
+);
 
 module.exports = routes;

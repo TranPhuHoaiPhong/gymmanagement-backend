@@ -13,6 +13,22 @@ const getAllCheckInLogs = async (req, res) => {
   }
 };
 
+const getMembersBySession = async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const resMembers = await CheckInLogAdminService.getMembersBySession(
+      sessionId
+    );
+    return res.status(200).json(resMembers);
+  } catch (error) {
+    console.error("Lỗi lấy tất cả members:", error);
+    return res.status(500).json({
+      status: "ERROR",
+      message: "Lỗi máy chủ, vui lòng thử lại sau",
+    });
+  }
+};
 module.exports = {
   getAllCheckInLogs,
+  getMembersBySession,
 };

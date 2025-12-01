@@ -30,10 +30,8 @@ const membershipSchema = new mongoose.Schema(
     checkInDates: [
       {
         date: { type: Date, required: true },
-        sessionId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "TrainerSession",
-        },
+        sessionId: { type: mongoose.Schema.Types.ObjectId },
+        sessionType: { type: String, enum: ["group", "trainer"] },
       },
     ],
   },
