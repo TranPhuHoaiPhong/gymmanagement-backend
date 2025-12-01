@@ -1,17 +1,21 @@
+const mongoose = require("mongoose");
+
 const checkInQRSchema = new mongoose.Schema(
   {
-    sessionId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    membershipId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Membership",
+    },
     memberId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "User",
     },
-
-    qrCode: String, // URL hoặc base64
+    qrCode: String, // base64 hoặc URL QR
     hash: String, // token bảo mật
-    expiredAt: Date, // thời gian hết hạn (ví dụ: sau 30 phút)
-
-    scanned: { type: Boolean, default: false }, // tránh quét lại
+    expiredAt: Date,
+    scanned: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

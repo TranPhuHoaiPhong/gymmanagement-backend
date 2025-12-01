@@ -4,7 +4,12 @@ const GroupSessionAdminController = require("../../controllers/Admin/GroupSessio
 
 routes.post(
   "/create-groupsession",
-  GroupSessionAdminController.createGroupsession
+  GroupSessionAdminController.createGroupSession
+);
+
+routes.post(
+  "/join-groupsession/:id",
+  GroupSessionAdminController.joinGroupSession
 );
 
 // routes.post(

@@ -1,6 +1,6 @@
-const TrainerSessionAdminService = require("../../services/Admin/TrainerSessionAdminService");
+const GroupSessionAdminService = require("../../services/Admin/GroupSessionAdminService");
 
-const createGroupsession = async (req, res) => {
+const createGroupSession = async (req, res) => {
   try {
     const {
       title,
@@ -13,7 +13,9 @@ const createGroupsession = async (req, res) => {
       capacity,
     } = req.body;
 
-    // Kiểm tra thông tin cần thiết
+    // console.log(req.body);
+
+    // Validate fields
     if (!title || !packageId || !trainerId || !date) {
       return res.status(400).json({
         status: "ERROR",
@@ -21,8 +23,16 @@ const createGroupsession = async (req, res) => {
       });
     }
 
-    // Gọi service tạo GroupSession
-    const resCreate = await GroupSessionAdminService.createGroupsession({
+    // Validate date format
+    if (isNaN(Date.parse(date))) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Ngày không hợp lệ",
+      });
+    }
+
+    // Call service
+    const result = await GroupSessionAdminService.createGroupSession({
       title,
       packageId,
       trainerId,
@@ -33,13 +43,44 @@ const createGroupsession = async (req, res) => {
       capacity,
     });
 
-    return res.status(200).json(resCreate);
+    return res.status(200).json(result);
   } catch (error) {
     console.error("Lỗi tạo GroupSession:", error);
 
-    if (error?.status && error?.message) {
-      return res.status(400).json(error);
+    return res.status(500).json({
+      status: "ERROR",
+      message: "Lỗi máy chủ, vui lòng thử lại sau",
+    });
+  }
+};
+
+const joinGroupSession = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const sessionId = req.params.id;
+
+    if (!userId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Thiếu thông tin cần thiết",
+      });
     }
+    if (!sessionId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Thiếu ID GroupSession",
+      });
+    }
+
+    // Call service
+    const result = await GroupSessionAdminService.joinGroupSession({
+      userId,
+      sessionId,
+    });
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Lỗi đăng kí GroupSession:", error);
 
     return res.status(500).json({
       status: "ERROR",
@@ -114,7 +155,8 @@ const createGroupsession = async (req, res) => {
 // };
 
 module.exports = {
-  createGroupsession,
+  createGroupSession,
+  joinGroupSession,
   //   updateTrainersession,
   //   getAllTrainersessions,
   //   getDetailsTrainersession,
