@@ -100,6 +100,30 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
+const authStaff = (req, res, next) => {
+  const user = req.user;
+  if (user?.role === "staff") {
+    next();
+  } else {
+    return res.status(403).json({
+      status: "ERROR",
+      message: "Bạn không có quyền truy cập (chỉ dành cho Staff)",
+    });
+  }
+};
+
+const authAdmin = (req, res, next) => {
+  const user = req.user;
+  if (user?.role === "admin") {
+    next();
+  } else {
+    return res.status(403).json({
+      status: "ERROR",
+      message: "Bạn không có quyền truy cập (chỉ dành cho Admin)",
+    });
+  }
+};
+
 /**
  * Middleware cho phép Admin hoặc chính user đó truy cập
  */
@@ -167,10 +191,47 @@ const authUserApp = (req, res, next) => {
   });
 };
 
+const authUserOrAdminOrStaff = (req, res, next) => {
+  try {
+    const token = req.headers.token?.split(" ")[1];
+    const userId = req.params.id;
+
+    if (!token) {
+      return res
+        .status(401)
+        .json({ status: "ERROR", message: "Token không tồn tại" });
+    }
+
+    const decoded = jwt.verify(token, process.env.ACCCESS_TOKEN);
+    // Lưu thông tin user vào req
+    req.user = decoded;
+
+    // Check quyền
+    if (
+      decoded.role === "admin" ||
+      decoded.role === "staff" ||
+      decoded.id === userId
+    ) {
+      next();
+    } else {
+      return res
+        .status(403)
+        .json({ status: "ERROR", message: "Bạn không có quyền truy cập" });
+    }
+  } catch (err) {
+    return res
+      .status(403)
+      .json({ status: "ERROR", message: "Token không hợp lệ" });
+  }
+};
+
 module.exports = {
+  authStaff,
   authenticate, // xác thực chung
   authorizeRoles, // kiểm tra quyền động
   authMiddleware, // chỉ cho admin
   authUserMiddleware, // cho admin hoặc chính user
   authUserApp, // xác thực cho app (member)
+  authAdmin,
+  authUserOrAdminOrStaff,
 };

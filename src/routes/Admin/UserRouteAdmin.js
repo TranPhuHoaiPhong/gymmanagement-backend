@@ -2,10 +2,11 @@ const express = require("express");
 const routes = express.Router();
 const UserAdminController = require("../../controllers/Admin/UserAdminController");
 const {
-  authenticate,
-  authorizeRoles,
+  authStaff,
   authUserMiddleware,
   authMiddleware,
+  authAdmin,
+  authUserOrAdminOrStaff,
 } = require("../../middlewares/authMiddleware/authMiddleware");
 const upload = require("../../middlewares/upload");
 
@@ -64,7 +65,7 @@ routes.get(
 
 routes.get(
   "/get-details-user/:id",
-  authUserMiddleware,
+  authUserOrAdminOrStaff,
   UserAdminController.getDetailsUser
 );
 
