@@ -5,7 +5,6 @@ const createMembership = async (req, res) => {
     const { userId, packageId, startDate, trainerId, autoRenew, status } =
       req.body;
 
-
     if (!userId || !packageId || !startDate) {
       return res.status(400).json({
         status: "ERROR",
@@ -145,8 +144,7 @@ const getCurrentMembership = async (req, res) => {
 
 const paymentMembership = async (req, res) => {
   try {
-    const { userId, packageId } =
-      req.body;
+    const { userId, packageId } = req.body;
 
     if (!userId || !packageId) {
       return res.status(400).json({
@@ -155,9 +153,7 @@ const paymentMembership = async (req, res) => {
       });
     }
 
-    const resCreate = await MembershipAdminService.paymentMembership(
-      req.body
-    );
+    const resCreate = await MembershipAdminService.paymentMembership(req.body);
 
     console.log("Response from paymentMembership:", resCreate);
 
@@ -169,8 +165,43 @@ const paymentMembership = async (req, res) => {
       message: "Lỗi máy chủ, vui lòng thử lại sau",
     });
   }
-}; 
+};
 
+const renewMembership = async (req, res) => {
+  try {
+    const oldId = req.params.id;
+    const { packageId, trainerId, startDate } = req.body;
+
+    if (!oldId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "oldId không hợp lệ",
+      });
+    }
+
+    if (!packageId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "packageId là bắt buộc khi gia hạn",
+      });
+    }
+
+    const resRenew = await MembershipAdminService.renewMembership({
+      oldId,
+      packageId,
+      trainerId,
+      startDate,
+    });
+
+    return res.status(200).json(resRenew);
+  } catch (error) {
+    console.error("Lỗi gia hạn membership:", error);
+    return res.status(500).json({
+      status: "ERROR",
+      message: "Lỗi máy chủ, vui lòng thử lại sau",
+    });
+  }
+};
 
 module.exports = {
   createMembership,
@@ -180,4 +211,5 @@ module.exports = {
   getDetailsMembership,
   paymentMembership,
   getCurrentMembership,
+  renewMembership,
 };

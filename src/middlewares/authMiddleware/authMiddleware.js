@@ -2,68 +2,6 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
 
-/**
- * Middleware xác thực token JWT
- * Dùng cho tất cả loại tài khoản (admin, staff, trainer, member)
- */
-const authenticate = (req, res, next) => {
-  try {
-    const token = req.headers.token?.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({
-        status: "ERROR",
-        message: "Token không tồn tại",
-      });
-    }
-
-    jwt.verify(token, process.env.ACCCESS_TOKEN, function (err, decoded) {
-      if (err) {
-        return res.status(403).json({
-          status: "ERROR",
-          message: "Token không hợp lệ",
-        });
-      }
-
-      req.user = decoded; // lưu user vào request để các middleware khác dùng
-      next();
-    });
-  } catch (error) {
-    return res.status(500).json({
-      status: "ERROR",
-      message: "Lỗi xác thực người dùng",
-    });
-  }
-};
-
-/**
- * Middleware kiểm tra quyền truy cập
- * @param  {...string} allowedRoles - danh sách quyền được phép (vd: "admin", "staff")
- */
-const authorizeRoles = (...allowedRoles) => {
-  return (req, res, next) => {
-    const userRole = req.user?.role;
-    if (!userRole) {
-      return res.status(403).json({
-        status: "ERROR",
-        message: "Không xác định được quyền người dùng",
-      });
-    }
-
-    if (allowedRoles.includes(userRole)) {
-      next();
-    } else {
-      return res.status(403).json({
-        status: "ERROR",
-        message: `Tài khoản của bạn (${userRole}) không có quyền truy cập tài nguyên này`,
-      });
-    }
-  };
-};
-
-/**
- * Middleware dành cho admin (hoặc quyền cao hơn)
- * Chỉ cho phép truy cập nếu role là "admin"
- */
 const authMiddleware = (req, res, next) => {
   try {
     const token = req.headers.token?.split(" ")[1];
@@ -101,25 +39,37 @@ const authMiddleware = (req, res, next) => {
 };
 
 const authStaff = (req, res, next) => {
-  const user = req.user;
-  if (user?.role === "staff") {
-    next();
-  } else {
-    return res.status(403).json({
-      status: "ERROR",
-      message: "Bạn không có quyền truy cập (chỉ dành cho Staff)",
-    });
-  }
-};
+  try {
+    const token = req.headers.token?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({
+        status: "ERROR",
+        message: "Token không tồn tại",
+      });
+    }
 
-const authAdmin = (req, res, next) => {
-  const user = req.user;
-  if (user?.role === "admin") {
-    next();
-  } else {
-    return res.status(403).json({
+    jwt.verify(token, process.env.ACCCESS_TOKEN, function (err, decoded) {
+      if (err) {
+        return res.status(403).json({
+          status: "ERROR",
+          message: "Token không hợp lệ",
+        });
+      }
+
+      if (decoded.role === "staff") {
+        req.user = decoded;
+        next();
+      } else {
+        return res.status(403).json({
+          status: "ERROR",
+          message: "Bạn không có quyền truy cập (chỉ dành cho Staff)",
+        });
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({
       status: "ERROR",
-      message: "Bạn không có quyền truy cập (chỉ dành cho Admin)",
+      message: "Lỗi xác thực",
     });
   }
 };
@@ -227,11 +177,8 @@ const authUserOrAdminOrStaff = (req, res, next) => {
 
 module.exports = {
   authStaff,
-  authenticate, // xác thực chung
-  authorizeRoles, // kiểm tra quyền động
   authMiddleware, // chỉ cho admin
   authUserMiddleware, // cho admin hoặc chính user
   authUserApp, // xác thực cho app (member)
-  authAdmin,
   authUserOrAdminOrStaff,
 };

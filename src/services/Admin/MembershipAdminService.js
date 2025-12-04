@@ -275,6 +275,51 @@ const getCurrentMembership = (membershipId) => {
   });
 };
 
+const renewMembership = (dataMembership) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { membershipId, packageId, trainerId, startDate } = dataMembership;
+
+      const oldMembership = await Membership.findById(membershipId);
+      if (!oldMembership) {
+        return resolve({
+          status: "ERROR",
+          message: "Membership không tồn tại",
+        });
+      }
+
+      if (!packageId) {
+        return resolve({
+          status: "ERROR",
+          message: "Thiếu packageId khi gia hạn",
+        });
+      }
+
+      oldMembership.status = "expired";
+      await oldMembership.save();
+
+      const newMembership = new Membership({
+        userId: oldMembership.userId,
+        packageId: packageId,
+        trainerId: trainerId || oldMembership.trainerId,
+        startDate: startDate || oldMembership.endDate,
+        renewedFrom: oldMembership._id,
+        status: "active",
+      });
+
+      await newMembership.save();
+
+      return resolve({
+        status: "OK",
+        message: "Gia hạn thành công",
+        data: newMembership,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createMembership,
   updateMembership,
@@ -283,4 +328,5 @@ module.exports = {
   getDetailsMembership,
   paymentMembership,
   getCurrentMembership,
+  renewMembership,
 };

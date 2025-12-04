@@ -31,4 +31,10 @@ routes.get(
   MembershipAdminController.getCurrentMembership
 );
 
+routes.post(
+  "/renew-membership/:id",
+  authMiddleware,
+  MembershipAdminController.renewMembership
+);
+
 module.exports = routes;

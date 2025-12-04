@@ -245,6 +245,24 @@ const searchPackages = (data) => {
   });
 };
 
+const getAllPackagesActive = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const getPackage = await Package.find({ isActive: true })
+        .populate("trainerId", "fullName")
+        .lean();
+
+      resolve({
+        status: "OK",
+        message: "Lấy tất cả thành công",
+        data: getPackage,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 module.exports = {
   createPackage,
   updatePackage,
@@ -252,4 +270,5 @@ module.exports = {
   getAllPackages,
   getDetailsPackage,
   searchPackages,
+  getAllPackagesActive,
 };

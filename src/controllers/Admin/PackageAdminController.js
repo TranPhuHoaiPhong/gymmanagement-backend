@@ -143,6 +143,19 @@ const searchPackages = async (req, res) => {
   }
 };
 
+const getAllPackagesActive = async (req, res) => {
+  try {
+    const resPackage = await PackageAdminService.getAllPackagesActive();
+    return res.status(200).json(resPackage);
+  } catch (error) {
+    console.error("Lỗi sửa package:", error);
+    return res.status(500).json({
+      status: "ERROR",
+      message: "Lỗi máy chủ, vui lòng thử lại sau",
+    });
+  }
+};
+
 module.exports = {
   createPackage,
   updatePackage,
@@ -150,4 +163,5 @@ module.exports = {
   getAllPackages,
   getDetailsPackage,
   searchPackages,
+  getAllPackagesActive,
 };

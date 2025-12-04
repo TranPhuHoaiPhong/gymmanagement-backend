@@ -25,6 +25,11 @@ routes.delete(
 routes.get("/get-all-packages", packageAdminController.getAllPackages);
 
 routes.get(
+  "/get-all-packages-active",
+  packageAdminController.getAllPackagesActive
+);
+
+routes.get(
   "/get-details-package/:id",
   authMiddleware,
   packageAdminController.getDetailsPackage

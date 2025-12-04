@@ -5,7 +5,6 @@ const {
   authStaff,
   authUserMiddleware,
   authMiddleware,
-  authAdmin,
   authUserOrAdminOrStaff,
 } = require("../../middlewares/authMiddleware/authMiddleware");
 const upload = require("../../middlewares/upload");

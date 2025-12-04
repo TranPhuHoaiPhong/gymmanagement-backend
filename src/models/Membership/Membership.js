@@ -19,6 +19,7 @@ const membershipSchema = new mongoose.Schema(
     renewalCount: { type: Number, default: 0, min: 0 },
     remainingSessions: { type: Number, default: 0, min: 0 },
     autoRenew: { type: Boolean, default: false },
+    renewedFrom: { type: mongoose.Schema.Types.ObjectId, ref: "Membership" },
     notificationSent: { type: Boolean, default: false },
 
     status: {

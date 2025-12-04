@@ -1,4 +1,5 @@
 const TransactionAdminService = require("../../services/Admin/TransactionAdminService");
+const Transaction = require("../../models/Transaction/transaction");
 
 const createTransaction = async (req, res) => {
   try {
@@ -96,9 +97,57 @@ const getDetailsTransaction = async (req, res) => {
   }
 };
 
+const getReportTransaction = async (req, res) => {
+  try {
+    const data = await TransactionAdminService.getReportTransaction(req.query);
+    return res.status(200).json({ status: "OK", data });
+  } catch (error) {
+    console.error("Lỗi lấy report:", error);
+    return res.status(500).json({ status: "ERROR", message: "Server error" });
+  }
+};
+
+const exportExcel = async (req, res) => {
+  try {
+    const workbook = await TransactionAdminService.buildExcelWorkbook(
+      req.query
+    );
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", "attachment; filename=report.xlsx");
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error("Lỗi xuất Excel:", error);
+    res.status(500).json({ status: "ERROR", message: "Lỗi server" });
+  }
+};
+
+const exportPDF = async (req, res) => {
+  try {
+    const doc = await TransactionAdminService.buildPDFDocument(req.query);
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", "attachment; filename=report.pdf");
+
+    doc.pipe(res);
+    doc.end();
+  } catch (error) {
+    console.error("Lỗi xuất PDF:", error);
+    res.status(500).json({ status: "ERROR", message: "Lỗi server" });
+  }
+};
+
 module.exports = {
   createTransaction,
   updateTransaction,
   getAllTransactions,
   getDetailsTransaction,
+  getReportTransaction,
+  exportExcel,
+  exportPDF,
 };
