@@ -17,7 +17,10 @@ router.post("/health-info", authUserApp, healthInfo.addHealthInfo);
 router.get("/trainer/:trainerId", ReviewController.getReviewsByTrainer);
 // Tạo review mới
 router.post("/create-review", ReviewController.createReview);
-
+// Tạo update review
+router.put("/update-review/:id", authUserApp, ReviewController.updateReview);
+// Tạo delete review
+router.delete("/delete-review/:id", authUserApp, ReviewController.deleteReview);
 // Like / Unlike review
 router.post("/:reviewId/like", ReviewController.toggleLike);
 

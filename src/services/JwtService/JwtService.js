@@ -9,7 +9,7 @@ const genneralAccessToken = (payload) => {
       ...payload, // payload chứa id, role
     },
     process.env.ACCCESS_TOKEN,
-    { expiresIn: "30s" }
+    { expiresIn: "24h" }
   );
   return access_Token;
 };

@@ -16,7 +16,6 @@ class ReviewController {
     const { member, trainer, comment } = req.body;
     try {
       const review = await ReviewService.createReview({ member, trainer, comment });
-      console.log("Data 1",review)
       res.status(201).json(review);
     } catch (err) {
       console.error(err);
@@ -29,6 +28,39 @@ class ReviewController {
     const userId = req.body.userId;
     try {
       const review = await ReviewService.toggleLike(reviewId, userId);
+      res.status(200).json(review);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
+  }
+
+  static async updateReview(req, res) {
+    const reviewId = req.params.id;        
+    const userId = req.userId;  
+    const { comment } = req.body;
+
+    try {
+      const review = await ReviewService.updateReview(reviewId, userId, comment);
+      if (!review.success) {
+        return res.status(400).json({ msg: review.message });
+      }
+      res.status(200).json(review);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
+  }
+
+  static async deleteReview(req, res) {
+    const reviewId = req.params.id;        
+    const userId = req.userId;  
+
+    try {
+      const review = await ReviewService.deleteReview(reviewId, userId);
+      if (!review.success) {
+        return res.status(400).json({ msg: review.message });
+      }
       res.status(200).json(review);
     } catch (err) {
       console.error(err);

@@ -126,7 +126,7 @@ const authUserApp = (req, res, next) => {
 
   const token = authHeader.split(" ")[1];
 
-  jwt.verify(token, process.env.ACCCESS_TOKEN, function (err, decoded) {
+  jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
     if (err) {
       return res.status(404).json({
         status: "ERROR",
