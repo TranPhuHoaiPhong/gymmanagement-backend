@@ -5,6 +5,7 @@ const healthInfo = require("../../controllers/User/healthInfo");
 const { authUserApp } = require("../../middlewares/authMiddleware/authMiddleware");
 const ReviewController = require("../../controllers/User/reviewController");
 const OtpController = require("../../controllers/User/otpController");
+const MessageController = require("../../controllers/User/message");
 
 
 
@@ -27,6 +28,8 @@ router.delete("/delete-review/:id", authUserApp, ReviewController.deleteReview);
 // Change password
 router.post('/send', authUserApp, OtpController.sendOtp);
 router.post('/verify', authUserApp, OtpController.verifyOtp);
+
+router.get('/message', authUserApp, MessageController.getMessage);
 
 
 
