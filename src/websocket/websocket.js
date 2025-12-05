@@ -6,11 +6,9 @@ function setupWebSocket(server) {
   const wss = new WebSocketServer({ server }); // Dùng server Express
 
   wss.on("connection", (ws) => {
-    console.log("New WS connection");
 
     ws.on("message", async (message) => {
     const msgStr = message.toString(); // chuyển Buffer sang string
-    console.log("Received string:", msgStr);
 
     try {
         const data = JSON.parse(msgStr);
@@ -23,36 +21,42 @@ function setupWebSocket(server) {
 
         // Khi user gửi tin nhắn
         if (data.type === "message") {
-        const { from, to, text, timestamp } = data;
+  const { from, to, text, timestamp } = data;
 
-        let msgDoc;
-        try {
-            msgDoc = await Message.create({
-            from,
-            to,
-            text,
-            timestamp: timestamp ? new Date(timestamp) : new Date(),
-            });
-        } catch (dbErr) {
-            console.error("MongoDB save error:", dbErr);
-            return; // Không gửi nếu lưu DB fail
-        }
+  // Xác định role dựa vào userId
+  const senderRole = from === "68ff36d578fc9208ee291a83" ? "admin" : "member";
 
-        const msgPayload = {
-            from,
-            to,
-            text,
-            timestamp: msgDoc.timestamp
-        };
+  let msgDoc;
+  try {
+    msgDoc = await Message.create({
+      from,
+      to,
+      text,
+      senderRole,
+      timestamp: timestamp ? new Date(timestamp) : new Date(),
+    });
+  } catch (dbErr) {
+    console.error("MongoDB save error:", dbErr);
+    return; // Không gửi nếu lưu DB fail
+  }
 
-        // Gửi đến người nhận nếu online
-        if (clients.has(to)) {
-            clients.get(to).send(JSON.stringify(msgPayload));
-        }
+  const msgPayload = {
+    from,
+    to,
+    text,
+    senderRole: msgDoc.senderRole,
+    timestamp: msgDoc.timestamp,
+  };
 
-        // Gửi lại cho người gửi
-        ws.send(JSON.stringify(msgPayload));
-        }
+  // Gửi đến người nhận nếu online
+  if (clients.has(to)) {
+    clients.get(to).send(JSON.stringify(msgPayload));
+  }
+
+  // Gửi lại cho người gửi
+  ws.send(JSON.stringify(msgPayload));
+}
+
 
     } catch (err) {
         console.error("WS message error:", err);
