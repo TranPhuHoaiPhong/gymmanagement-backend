@@ -4,6 +4,7 @@ const authController = require("../../controllers/User/authController");
 const healthInfo = require("../../controllers/User/healthInfo");
 const { authUserApp } = require("../../middlewares/authMiddleware/authMiddleware");
 const ReviewController = require("../../controllers/User/reviewController");
+const OtpController = require("../../controllers/User/otpController");
 
 
 
@@ -22,7 +23,10 @@ router.put("/update-review/:id", authUserApp, ReviewController.updateReview);
 // Tạo delete review
 router.delete("/delete-review/:id", authUserApp, ReviewController.deleteReview);
 // Like / Unlike review
-router.post("/:reviewId/like", ReviewController.toggleLike);
+// router.post("/:reviewId/like", ReviewController.toggleLike);
+// Change password
+router.post('/send', authUserApp, OtpController.sendOtp);
+router.post('/verify', authUserApp, OtpController.verifyOtp);
 
 
 

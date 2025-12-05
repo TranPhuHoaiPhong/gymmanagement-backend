@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Web B</title>
+  
+</head>
+<body>
+
+<h2>Chat Web B</h2>
+<div id="messages"></div>
+
+<div id="input">
+  <input type="text" id="text" placeholder="Nhập tin nhắn..." />
+  <button onclick="sendMessage()">Gửi</button>
+</div>
+
+<script>
+  // Thay userId và peerId theo ý bạn
+  const userId = "web_b";       // ID của web client này
+  const peerId = "flutter_a";   // ID bên A (Flutter)
+
+  const ws = new WebSocket("ws://localhost:5000"); // Server Node.js
+
+  ws.onopen = () => {
+    console.log("Connected to server");
+    // Login
+    ws.send(JSON.stringify({ type: "login", userId }));
+  };
+
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    if (data.type === "message" || (data.from && data.to && data.text)) {
+      // Kiểm tra tin nhắn liên quan đến mình
+      if ((data.from === peerId && data.to === userId) ||
+          (data.from === userId && data.to === peerId)) {
+        addMessage(data);
+      }
+    }
+  };
+
+  function sendMessage() {
+    const textInput = document.getElementById("text");
+    const text = textInput.value.trim();
+    if (!text) return;
+
+    const msg = {
+      type: "message",
+      from: userId,
+      to: peerId,
+      text: text,
+      timestamp: new Date().toISOString()
+    };
+
+    ws.send(JSON.stringify(msg));
+    textInput.value = "";
+  }
+
+  function addMessage(msg) {
+    const messagesDiv = document.getElementById("messages");
+    const div = document.createElement("div");
+
+    const isMe = msg.from === userId;
+    div.className = "message " + (isMe ? "me" : "peer");
+
+    const time = new Date(msg.timestamp);
+    const timeStr = `${time.getHours().toString().padStart(2,'0')}:${time.getMinutes().toString().padStart(2,'0')}`;
+
+    div.innerHTML = `<strong>${isMe ? 'Bạn' : 'Peer'}:</strong> ${msg.text} <small>${timeStr}</small>`;
+    messagesDiv.appendChild(div);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+</script>
+
+</body>
+</html>
