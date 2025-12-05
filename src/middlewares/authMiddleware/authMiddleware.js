@@ -12,7 +12,7 @@ const authMiddleware = (req, res, next) => {
       });
     }
 
-    jwt.verify(token, process.env.ACCCESS_TOKEN, function (err, decoded) {
+    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
       if (err) {
         return res.status(403).json({
           status: "ERROR",
@@ -48,7 +48,7 @@ const authStaff = (req, res, next) => {
       });
     }
 
-    jwt.verify(token, process.env.ACCCESS_TOKEN, function (err, decoded) {
+    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
       if (err) {
         return res.status(403).json({
           status: "ERROR",
@@ -89,7 +89,7 @@ const authUserMiddleware = (req, res, next) => {
       });
     }
 
-    jwt.verify(token, process.env.ACCCESS_TOKEN, function (err, decoded) {
+    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
       if (err) {
         return res.status(403).json({
           status: "ERROR",
@@ -152,7 +152,7 @@ const authUserOrAdminOrStaff = (req, res, next) => {
         .json({ status: "ERROR", message: "Token không tồn tại" });
     }
 
-    const decoded = jwt.verify(token, process.env.ACCCESS_TOKEN);
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
     // Lưu thông tin user vào req
     req.user = decoded;
 
