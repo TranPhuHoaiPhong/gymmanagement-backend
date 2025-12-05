@@ -29,7 +29,7 @@ router.delete("/delete-review/:id", authUserApp, ReviewController.deleteReview);
 router.post('/send', authUserApp, OtpController.sendOtp);
 router.post('/verify', authUserApp, OtpController.verifyOtp);
 
-router.get('/message', authUserApp, MessageController.getMessage);
+router.get('/message/:id', MessageController.getMessage);
 
 
 

@@ -8,7 +8,6 @@ class MessageService {
         from: userId,
       })
 
-      console.log("Message", result);
 
       return {
         success: true,
