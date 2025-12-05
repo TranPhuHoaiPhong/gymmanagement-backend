@@ -13,6 +13,7 @@ const CheckInLogRouteAdmin = require("./Admin/CheckInLogRouteAdmin");
 const GroupSessionRouteAdmin = require("./Admin/GroupSessionRouteAdmin");
 const CheckInQRRouteAdmin = require("./Admin/CheckInQRRouteAdmin");
 const NotificationRouteAdmin = require("./Admin/NotificationRouteAdmin");
+// const MessageRouteAdmin = require("./Admin/MessageRouteAdmin");
 
 // Admin
 router.use("/user", UserRouteAdmin);
@@ -26,6 +27,7 @@ router.use("/admin", ReviewRouteAdmin);
 // router.use("/admin", GroupSessionRouteAdmin);
 router.use("/admin", CheckInQRRouteAdmin);
 router.use("/admin", NotificationRouteAdmin);
+// router.use("/admin", MessageRouteAdmin);
 
 // Customer
 router.use("/customer", RouteCustomer);
