@@ -23,6 +23,19 @@ const createMembership = (newMembership) => {
         });
       }
 
+       const existingMembership = await Membership.findOne({
+        userId,
+        packageId,
+        status: "active",
+      });
+
+      if (existingMembership) {
+        return resolve({
+          status: "ERROR",
+          message: "Người dùng đã có membership active với gói này",
+        });
+      }
+
       if (packageData.type === "personal_trainer") {
         if (!trainerId) {
           return resolve({
@@ -43,6 +56,8 @@ const createMembership = (newMembership) => {
       const start = new Date(startDate);
       const end = new Date(start);
       end.setDate(start.getDate() + packageData.durationInDays);
+
+
 
       const createdMembership = await Membership.create({
         userId,
@@ -74,7 +89,6 @@ const createMembership = (newMembership) => {
 
 const paymentMembership = (newMembership) => {
   return new Promise(async (resolve, reject) => {
-    console.log("Payment membership function called with:");
     try {
       const { packageId, userId, trainerId } = newMembership;
 

@@ -6,6 +6,9 @@ const { authUserApp } = require("../../middlewares/authMiddleware/authMiddleware
 const ReviewController = require("../../controllers/User/reviewController");
 const OtpController = require("../../controllers/User/otpController");
 const MessageController = require("../../controllers/User/message");
+const TransactionAdminController = require("../../controllers/Admin/TransactionAdminController");
+const TransactionController = require("../../controllers/User/transaction");
+const MemberCheckController = require("../../controllers/User/Member");
 
 
 
@@ -32,6 +35,21 @@ router.post('/verify', authUserApp, OtpController.verifyOtp);
 router.get('/message/:id', MessageController.getMessage);
 
 router.get('/message-all', MessageController.getAllMessage);
+
+// Transaction routes
+router.post(
+  "/create-transaction-member",
+  authUserApp,
+  TransactionController.createTransaction
+);
+
+// check member 
+router.get(
+  "/member-check",
+  authUserApp,
+  MemberCheckController.memberavalable
+);
+
 
 
 
