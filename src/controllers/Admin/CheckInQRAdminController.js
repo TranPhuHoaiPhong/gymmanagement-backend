@@ -7,7 +7,7 @@ const checkInQRcreate = async (req, res) => {
     if (!membershipId || !memberId) {
       return res.status(400).json({
         status: "ERROR",
-        message: "Thiếu thông tin cần thiết",
+        message: "Thiếu thông tin membershipId hoặc memberId",
       });
     }
 
@@ -22,10 +22,33 @@ const checkInQRcreate = async (req, res) => {
       data: qr,
     });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({
       status: "ERROR",
-      message: "Server error",
+      message: error.message || "Server error",
+    });
+  }
+};
+
+const verifyQR = async (req, res) => {
+  try {
+    const { hash } = req.body;
+    const userId = req.user.id;
+
+    if (!hash) {
+      return res.status(400).json({ status: "ERROR", message: "Thiếu hash" });
+    }
+
+    const result = await CheckInQRAdminService.verifyQR(hash, userId);
+
+    return res.status(200).json({
+      status: "OK",
+      message: "Check-in thành công",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "ERROR",
+      message: error.message,
     });
   }
 };
@@ -43,7 +66,22 @@ const getMembers = async (req, res) => {
   }
 };
 
+const getAllCheckInHistory = async (req, res) => {
+  try {
+    const getAllHistory = await CheckInQRAdminService.getAllCheckInHistory();
+    return res.status(200).json(getAllHistory);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      status: "ERROR",
+      message: "Server error",
+    });
+  }
+};
+
 module.exports = {
   checkInQRcreate,
   getMembers,
+  verifyQR,
+  getAllCheckInHistory,
 };
