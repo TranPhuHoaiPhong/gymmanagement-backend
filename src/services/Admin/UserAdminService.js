@@ -226,7 +226,7 @@ const getAllMembers = () => {
     try {
       const users = await User.find({
         role: "member",
-      });
+      }).populate([{ path: "healthInfo" }, { path: "membership" }]);
 
       resolve({
         status: "OK",
@@ -376,6 +376,36 @@ const uploadAvatar = async (userId, file) => {
   });
 };
 
+const resetPasswordUser = (email) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        return resolve({
+          status: "ERR",
+          message: "Email không tồn tại trong hệ thống",
+        });
+      }
+
+      const newPassword = "123456";
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      user.passwordHash = hashedPassword;
+      const updatedUser = await user.save(); // Lưu user đã cập nhật
+
+      resolve({
+        status: "OK",
+        message: "Reset mật khẩu thành công",
+        newPassword: newPassword, // Có thể bỏ nếu không muốn expose
+        data: updatedUser,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
 module.exports = {
   createUser,
   loginUser,
@@ -389,4 +419,5 @@ module.exports = {
   getAllStaffs,
   getDetailsTrainer,
   getDetailsMember,
+  resetPasswordUser,
 };

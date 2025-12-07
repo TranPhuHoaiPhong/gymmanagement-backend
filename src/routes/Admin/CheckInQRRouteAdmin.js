@@ -2,21 +2,34 @@ const express = require("express");
 const routes = express.Router();
 const CheckInQRAdminController = require("../../controllers/Admin/CheckInQRAdminController");
 const {
-  authenticate,
-  authorizeRoles,
   authUserMiddleware,
   authMiddleware,
+  authAdminOrStaff,
+  authUserOrAdminOrStaff,
 } = require("../../middlewares/authMiddleware/authMiddleware");
+
+routes.post(
+  "/checkin/qr/create",
+  authAdminOrStaff,
+  CheckInQRAdminController.checkInQRcreate
+); // (admin or staff tạo)
+
+routes.post(
+  "/checkin/qr/verify",
+  authUserMiddleware,
+  CheckInQRAdminController.verifyQR
+); //  (member quét)
 
 routes.get(
   "/checkin/members",
-  authMiddleware,
+  authAdminOrStaff,
   CheckInQRAdminController.getMembers
 );
-routes.post(
-  "/checkin/qr/create",
-  authMiddleware,
-  CheckInQRAdminController.checkInQRcreate
+
+routes.get(
+  "/checkin/history-all",
+  authAdminOrStaff,
+  CheckInQRAdminController.getAllCheckInHistory
 );
 
 module.exports = routes;
