@@ -71,7 +71,7 @@ const createTransaction = (newTransaction) => {
         membershipId: membershipId || null,
         amount,
         paymentMethod,
-        status: "pending",
+        status: "completed",
       });
 
       resolve({

@@ -75,4 +75,10 @@ routes.post(
   UserAdminController.uploadAvatar
 );
 
+routes.post(
+  "/reset-password",
+  authMiddleware,
+  UserAdminController.resetPasswordUser
+);
+
 module.exports = routes;

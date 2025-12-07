@@ -327,6 +327,25 @@ const uploadAvatar = async (req, res) => {
   }
 };
 
+const resetPasswordUser = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        status: "ERR",
+        message: "Vui lòng nhập email",
+      });
+    }
+    const resResetPassword = await UserAdminService.resetPasswordUser(email);
+    return res.status(200).json(resResetPassword);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 module.exports = {
   createUser,
   loginUser,
@@ -342,4 +361,5 @@ module.exports = {
   getAllStaffs,
   getDetailsTrainer,
   getDetailsMember,
+  resetPasswordUser,
 };
