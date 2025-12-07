@@ -8,7 +8,7 @@ const path = require("path");
 
 const createTransaction = (newTransaction) => {
   return new Promise(async (resolve, reject) => {
-    try {
+    try { 
       const { userId, packageId, membershipId, amount, paymentMethod, status } =
         newTransaction;
 
@@ -57,7 +57,7 @@ const createTransaction = (newTransaction) => {
       const existingTxn = await Transaction.findOne({
         userId,
         packageId,
-        status: "pending",
+        status: "completed",
       });
       if (existingTxn)
         return resolve({

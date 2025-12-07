@@ -155,8 +155,6 @@ const paymentMembership = async (req, res) => {
 
     const resCreate = await MembershipAdminService.paymentMembership(req.body);
 
-    console.log("Response from paymentMembership:", resCreate);
-
     return res.status(200).json(resCreate);
   } catch (error) {
     console.error("Lỗi tạo membership:", error);
