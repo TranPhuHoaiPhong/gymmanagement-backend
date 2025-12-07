@@ -31,6 +31,8 @@ router.post('/verify', authUserApp, OtpController.verifyOtp);
 
 router.get('/message/:id', MessageController.getMessage);
 
+router.get('/message-all', MessageController.getAllMessage);
+
 
 
 module.exports = router;
