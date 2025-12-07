@@ -13,12 +13,27 @@ const storage = multer.diskStorage({
 });
 
 // Chỉ nhận file ảnh
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png/;
-  const mime = allowedTypes.test(file.mimetype);
+// const fileFilter = (req, file, cb) => {
+//   console.log("Original filename:", file.originalname)
+  
+//   const allowedTypes = /jpeg|jpg|png|heic/;
+//   const mime = allowedTypes.test(file.mimetype);
 
-  if (mime) cb(null, true);
-  else cb(new Error("File type not supported"), false);
+//   if (mime) cb(null, true);
+//   else cb(new Error("File type not supported"), false);
+// };
+
+const fileFilter = (req, file, cb) => {
+  console.log("Original filename:", file.originalname);
+
+  const ext = path.extname(file.originalname).toLowerCase(); // lấy .jpg, .png, ...
+  const allowedExts = [".jpg", ".jpeg", ".png", ".heic", ".webp"];
+
+  if (allowedExts.includes(ext)) {
+    cb(null, true);
+  } else {
+    cb(new Error("File type not supported"), false);
+  }
 };
 
 const upload = multer({ storage, fileFilter });
