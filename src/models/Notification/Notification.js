@@ -44,7 +44,7 @@ const notificationSchema = new mongoose.Schema(
     // 📌 Gửi cho ai: 1 người, nhiều người, hay toàn bộ
     target: {
       type: String,
-      enum: ["single", "group", "all"],
+      enum: ["single", "all"],
       default: "single",
     },
   },

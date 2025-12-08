@@ -1,10 +1,10 @@
 const NotificationAdminService = require("../../services/Admin/NotificationAdminService");
 
-const sendNotification = async (req, res) => {
+const createNotification = async (req, res) => {
   try {
     const { target, userId, userRole, type, title, message, data } = req.body;
 
-    const response = await NotificationAdminService.sendNotification({
+    const response = await NotificationAdminService.createNotification({
       target,
       userId,
       userRole,
@@ -13,6 +13,13 @@ const sendNotification = async (req, res) => {
       message,
       data,
     });
+
+    if (!title || !message || !type) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Thiếu title, message hoặc type",
+      });
+    }
 
     return res.status(200).json(response);
   } catch (error) {
@@ -39,6 +46,6 @@ const getAllNotification = async (req, res) => {
 };
 
 module.exports = {
-  sendNotification,
+  createNotification,
   getAllNotification,
 };

@@ -3,7 +3,7 @@ const Package = require("../../models/Package/package");
 const User = require("../../models/User/User");
 const Notification = require("../../models/Notification/Notification");
 
-const sendNotification = async ({
+const createNotification = async ({
   target,
   userId,
   userRole,
@@ -22,35 +22,36 @@ const sendNotification = async ({
       userList = [userId];
     }
 
-    // --- 2. Gửi cho nhóm (theo role) ---
+    // --- 2. Gửi cho nhóm (member / trainer) ---
     if (target === "group") {
-      if (!userRole)
-        return { status: "ERROR", message: "Thiếu userRole (member/trainer)" };
+      if (!["member", "trainer"].includes(userRole)) {
+        return { status: "ERROR", message: "userRole không hợp lệ" };
+      }
 
-      const users = await User.find({ role: userRole });
+      const users = await User.find({ role: userRole, isActive: true });
       userList = users.map((u) => u._id);
     }
 
-    // --- 3. Gửi cho tất cả người dùng ---
+    // --- 3. Gửi cho toàn bộ người dùng ---
     if (target === "all") {
-      const allUsers = await User.find({});
+      const allUsers = await User.find({ isActive: true });
       userList = allUsers.map((u) => u._id);
     }
 
     if (userList.length === 0)
       return { status: "ERROR", message: "Không tìm thấy user phù hợp" };
 
-    // --- 4. Chuẩn bị dữ liệu thông báo ---
+    // --- 4. Chuẩn bị data ---
     const notifications = userList.map((uid) => ({
       userId: uid,
       type,
       title,
       message,
       data: data || {},
-      target,
+      target: "single", // luôn single vì mỗi user là 1 thông báo riêng
     }));
 
-    // --- 5. Lưu hàng loạt vào DB ---
+    // --- 5. Lưu vào DB ---
     await Notification.insertMany(notifications);
 
     return {
@@ -80,6 +81,6 @@ const getAllNotification = () => {
 };
 
 module.exports = {
-  sendNotification,
+  createNotification,
   getAllNotification,
 };
