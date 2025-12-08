@@ -46,7 +46,7 @@ const checkInQRcreate = async ({ membershipId, memberId }) => {
 
 const verifyQR = async (hash, userId) => {
   // ========================================
-  // 1. Tìm đúng QR thuộc về chính member này
+  // 1. Tìm đúng QR
   // ========================================
   const qr = await CheckInQR.findOne({ hash, memberId: userId });
   if (!qr) throw new Error("QR không hợp lệ hoặc không thuộc về bạn");
@@ -65,7 +65,6 @@ const verifyQR = async (hash, userId) => {
 
   if (membership.endDate < new Date()) throw new Error("Membership đã hết hạn");
 
-  // Kiểm tra loại membership theo buổi
   if (membership.type === "session" && membership.remainingSessions <= 0)
     throw new Error("Bạn đã hết buổi trong membership");
 
@@ -91,14 +90,16 @@ const verifyQR = async (hash, userId) => {
     membershipId: membership._id,
     qrCodeId: qr._id,
     status: "verified",
-    verifiedBy: null, // member tự quét → không có staff
+    verifiedBy: null,
   });
 
   // ========================================
   // 5. Tạo TrainerSession (nếu membership có trainer)
   // ========================================
+  let trainerSession = null;
+
   if (membership.trainerId) {
-    await TrainerSession.create({
+    trainerSession = await TrainerSession.create({
       membershipId: membership._id,
       trainerId: membership.trainerId,
       userId: userId,
@@ -111,17 +112,27 @@ const verifyQR = async (hash, userId) => {
   // ========================================
   if (membership.type === "session") {
     membership.remainingSessions -= 1;
-    await membership.save();
   }
 
   // ========================================
-  // 7. Đánh dấu QR đã sử dụng
+  // 7. Lưu vào membership.checkInDates
+  // ========================================
+  membership.checkInDates.push({
+    date: new Date(),
+    sessionId: trainerSession ? trainerSession._id : log._id,
+    sessionType: membership.trainerId ? "trainer" : "group",
+  });
+
+  await membership.save();
+
+  // ========================================
+  // 8. Đánh dấu QR đã sử dụng
   // ========================================
   qr.scanned = true;
   await qr.save();
 
   // ========================================
-  // 8. Trả kết quả
+  // 9. Trả kết quả
   // ========================================
   return {
     message: "Check-in thành công",
@@ -135,6 +146,7 @@ const verifyQR = async (hash, userId) => {
         id: membership._id,
         remainingSessions: membership.remainingSessions,
         type: membership.type,
+        lastCheckIn: new Date(),
       },
     },
   };
