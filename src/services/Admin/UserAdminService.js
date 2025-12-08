@@ -17,6 +17,7 @@ const createUser = (newUser) => {
         passwordHash,
         role,
         avatarUrl,
+        trainerProfile,
       } = newUser;
 
       const checkUser = await User.findOne({ email });
@@ -55,6 +56,7 @@ const createUser = (newUser) => {
         passwordHash: hash,
         role,
         avatarUrl,
+        trainerProfile,
       });
 
       return resolve({

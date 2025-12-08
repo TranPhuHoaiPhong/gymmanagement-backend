@@ -2,21 +2,13 @@ const express = require("express");
 const routes = express.Router();
 const ReviewAdminController = require("../../controllers/Admin/ReviewAdminController");
 
-routes.post("/create-review", ReviewAdminController.createReiview);
+routes.post("/create-review", ReviewAdminController.createReview);
 
-// routes.post(
-//   "/update-trainersession/:id",
-//   TrainerSessionAdminController.updateTrainersession
-// );
+routes.get(
+  "/get-trainer-reviews/:trainerId",
+  ReviewAdminController.getTrainerReviews
+);
 
-// routes.get(
-//   "/get-all-trainersessions",
-//   TrainerSessionAdminController.getAllTrainersessions
-// );
-
-// routes.get(
-//   "/get-details-trainersession/:id",
-//   TrainerSessionAdminController.getDetailsTrainersession
-// );
+routes.delete("/delete-review/:reviewId", ReviewAdminController.deleteReview);
 
 module.exports = routes;

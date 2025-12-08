@@ -7,7 +7,7 @@ const checkInQRcreate = async (req, res) => {
     if (!membershipId || !memberId) {
       return res.status(400).json({
         status: "ERROR",
-        message: "Thiếu thông tin membershipId hoặc memberId",
+        message: "Thiếu membershipId hoặc memberId",
       });
     }
 
@@ -24,7 +24,7 @@ const checkInQRcreate = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       status: "ERROR",
-      message: error.message || "Server error",
+      message: error.message,
     });
   }
 };
@@ -32,7 +32,7 @@ const checkInQRcreate = async (req, res) => {
 const verifyQR = async (req, res) => {
   try {
     const { hash } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.id; // member đang quét QR
 
     if (!hash) {
       return res.status(400).json({ status: "ERROR", message: "Thiếu hash" });
@@ -42,14 +42,11 @@ const verifyQR = async (req, res) => {
 
     return res.status(200).json({
       status: "OK",
-      message: "Check-in thành công",
-      data: result,
+      message: result.message,
+      data: result.data,
     });
   } catch (error) {
-    return res.status(400).json({
-      status: "ERROR",
-      message: error.message,
-    });
+    return res.status(400).json({ status: "ERROR", message: error.message });
   }
 };
 
@@ -68,13 +65,12 @@ const getMembers = async (req, res) => {
 
 const getAllCheckInHistory = async (req, res) => {
   try {
-    const getAllHistory = await CheckInQRAdminService.getAllCheckInHistory();
-    return res.status(200).json(getAllHistory);
+    const result = await CheckInQRAdminService.getAllCheckInHistory();
+    return res.status(200).json(result);
   } catch (error) {
-    console.error(error);
     return res.status(500).json({
       status: "ERROR",
-      message: "Server error",
+      message: error.message,
     });
   }
 };

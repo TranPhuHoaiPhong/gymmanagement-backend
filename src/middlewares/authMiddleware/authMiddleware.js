@@ -178,7 +178,6 @@ const authUserOrAdminOrStaff = (req, res, next) => {
 const authAdminOrStaff = (req, res, next) => {
   try {
     const token = req.headers.token?.split(" ")[1];
-    const userId = req.params.id;
 
     if (!token) {
       return res

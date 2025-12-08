@@ -60,6 +60,45 @@ const createReview = (newReview) => {
   });
 };
 
+const getTrainerReviews = async (trainerId) => {
+  try {
+    const reviews = await Review.find({ trainer: trainerId })
+      .populate("member", "fullName avatarUrl")
+      .sort({ createdAt: -1 });
+
+    return {
+      status: "OK",
+      message: "Lấy reviews thành công.",
+      data: reviews,
+    };
+  } catch (error) {
+    console.error("Lỗi trong getTrainerReviews:", error);
+    throw {
+      status: "ERROR",
+      message: "Lỗi máy chủ khi lấy reviews.",
+    };
+  }
+};
+
+const deleteReview = async (reviewId) => {
+  try {
+    await Review.findByIdAndDelete(reviewId);
+
+    return {
+      status: "OK",
+      message: "Bình luận đã được xóa.",
+    };
+  } catch (error) {
+    console.error("Lỗi trong deleteReview:", error);
+    throw {
+      status: "ERROR",
+      message: "Lỗi máy chủ khi xóa bình luận.",
+    };
+  }
+};
+
 module.exports = {
   createReview,
+  getTrainerReviews,
+  deleteReview,
 };

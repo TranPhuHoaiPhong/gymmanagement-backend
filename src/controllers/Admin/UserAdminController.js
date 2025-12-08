@@ -12,6 +12,7 @@ const createUser = async (req, res) => {
       passwordHash,
       role,
       avatarUrl,
+      trainerProfile,
     } = req.body;
 
     // Kiểm tra định dạng
@@ -58,6 +59,7 @@ const createUser = async (req, res) => {
       passwordHash,
       role,
       avatarUrl,
+      trainerProfile,
     });
 
     return res.status(200).json(resCreate);

@@ -6,9 +6,75 @@ const ExcelJS = require("exceljs");
 const PDFDocument = require("pdfkit");
 const path = require("path");
 
+const createTransactionDirect = (TransactionData) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { userId, packageId, trainerId } = TransactionData;
+
+      const checkUser = await User.findById(userId);
+      if (!checkUser) {
+        return resolve({
+          status: "ERROR",
+          message: "Người dùng không tồn tại.",
+        });
+      }
+
+      const checkPackage = await Package.findById(packageId);
+      if (!checkPackage) {
+        return resolve({
+          status: "ERROR",
+          message: "Gói tập không tồn tại.",
+        });
+      }
+      if (!checkPackage.isActive) {
+        return resolve({
+          status: "ERROR",
+          message: "Gói tập đã bị khóa.",
+        });
+      }
+
+      const membership = await Membership.create({
+        userId,
+        packageId,
+        trainerId: checkPackage.type === "personal_trainer" ? trainerId : null,
+        startDate: new Date(),
+        remainingSessions:
+          checkPackage.type === "personal_trainer"
+            ? checkPackage.sessionsWithTrainer
+            : 0,
+        status: "active",
+      });
+
+      const createdTransaction = await Transaction.create({
+        userId,
+        packageId,
+        membershipId: membership._id,
+        trainerId: trainerId || null,
+        amount: checkPackage.price,
+        paymentMethod: "direct",
+        status: "completed",
+      });
+
+      checkPackage.registeredCount = (checkPackage.registeredCount || 0) + 1;
+      await checkPackage.save();
+
+      resolve({
+        status: "OK",
+        message: "Tạo giao dịch trực tiếp và membership thành công.",
+        data: {
+          transaction: createdTransaction,
+          membership,
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const createTransaction = (newTransaction) => {
   return new Promise(async (resolve, reject) => {
-    try { 
+    try {
       const { userId, packageId, membershipId, amount, paymentMethod, status } =
         newTransaction;
 
@@ -336,4 +402,5 @@ module.exports = {
   getReportTransaction,
   buildExcelWorkbook,
   buildPDFDocument,
+  createTransactionDirect,
 };

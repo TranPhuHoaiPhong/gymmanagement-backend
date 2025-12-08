@@ -1,6 +1,6 @@
 const ReviewAdminService = require("../../services/Admin/ReviewAdminService");
 
-const createReiview = async (req, res) => {
+const createReview = async (req, res) => {
   try {
     const { member, trainer, rating, comment, targetType } = req.body;
 
@@ -11,7 +11,7 @@ const createReiview = async (req, res) => {
       });
     }
 
-    const resCreate = await ReviewAdminService.createReiview({
+    const resCreate = await ReviewAdminService.createReview({
       member,
       trainer,
       rating,
@@ -34,71 +34,52 @@ const createReiview = async (req, res) => {
   }
 };
 
-// const updateTrainersession = async (req, res) => {
-//   try {
-//     const trainersessionId = req.params.id;
-//     const data = req.body;
+const getTrainerReviews = async (req, res) => {
+  try {
+    const { trainerId } = req.params;
 
-//     if (!trainersessionId) {
-//       return res.status(400).json({
-//         status: "ERROR",
-//         message: "Thiếu ID Trainersession cần cập nhật",
-//       });
-//     }
+    if (!trainerId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Thiếu trainerId",
+      });
+    }
 
-//     const resUpdate = await TrainerSessionAdminService.updateTrainerSession(
-//       trainersessionId,
-//       data
-//     );
+    const resGetReviews = await ReviewAdminService.getTrainerReviews(trainerId);
 
-//     return res.status(200).json(resUpdate);
-//   } catch (error) {
-//     console.error("Lỗi cập nhật Trainersession:", error);
+    return res.status(200).json(resGetReviews);
+  } catch (error) {
+    console.error("Lỗi lấy reviews:", error);
+    if (error?.status && error?.message) {
+      return res.status(400).json(error);
+    }
+  }
+};
 
-//     if (error?.status && error?.message) {
-//       return res.status(400).json(error);
-//     }
-//   }
-// };
+const deleteReview = async (req, res) => {
+  try {
+    const { reviewId } = req.params;
 
-// const getAllTrainersessions = async (req, res) => {
-//   try {
-//     const resGetAll = await TrainerSessionAdminService.getAllTrainerSessions();
-//     return res.status(200).json(resGetAll);
-//   } catch (error) {
-//     console.error("Lỗi lấy tất cả Trainersessions:", error);
-//     return res.status(500).json({
-//       status: "ERROR",
-//       message: "Lỗi máy chủ, vui lòng thử lại sau",
-//     });
-//   }
-// };
+    if (!reviewId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Thiếu reviewId",
+      });
+    }
 
-// const getDetailsTrainersession = async (req, res) => {
-//   try {
-//     const trainersessionId = req.params.id;
-//     const data = req.body;
-//     if (!trainersessionId) {
-//       return res.status(400).json({
-//         status: "ERROR",
-//         message: "Thiếu ID Trainersession cần lấy chi tiết",
-//       });
-//     }
-//     const resGetDetails =
-//       await TrainerSessionAdminService.getDetailsTrainerSession(
-//         trainersessionId,
-//         data
-//       );
-//     return res.status(200).json(resGetDetails);
-//   } catch (error) {
-//     console.error("Lỗi lấy chi tiết Trainersession:", error);
-//     return res.status(500).json({
-//       status: "ERROR",
-//       message: "Lỗi máy chủ, vui lòng thử lại sau",
-//     });
-//   }
-// };
+    const resDeleteReviews = await ReviewAdminService.deleteReview(reviewId);
+
+    return res.status(200).json(resDeleteReviews);
+  } catch (error) {
+    console.error("Lỗi lấy reviews:", error);
+    if (error?.status && error?.message) {
+      return res.status(400).json(error);
+    }
+  }
+};
 
 module.exports = {
-  createReiview,
+  createReview,
+  getTrainerReviews,
+  deleteReview,
 };

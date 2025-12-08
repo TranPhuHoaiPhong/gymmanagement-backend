@@ -22,7 +22,7 @@ const transactionSchema = new mongoose.Schema(
     amount: { type: Number, required: true },
     paymentMethod: {
       type: String,
-      enum: ["credit_card", "momo", "paypal", "bank_transfer", "other"],
+      enum: ["direct", "bank_transfer", "momo", "paypal", "other"],
       required: true,
     },
     status: {

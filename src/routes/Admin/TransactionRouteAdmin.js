@@ -2,14 +2,20 @@ const express = require("express");
 const routes = express.Router();
 const TransactionAdminController = require("../../controllers/Admin/TransactionAdminController");
 const {
-  authStaff,
   authUserMiddleware,
   authMiddleware,
+  authAdminOrStaff,
 } = require("../../middlewares/authMiddleware/authMiddleware");
 
 routes.post(
   "/create-transaction",
-  TransactionAdminController.createTransaction 
+  TransactionAdminController.createTransaction
+);
+
+routes.post(
+  "/create-transaction-direct",
+  authAdminOrStaff,
+  TransactionAdminController.createTransactionDirect
 );
 
 routes.post(
