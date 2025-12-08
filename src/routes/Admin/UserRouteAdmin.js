@@ -40,6 +40,7 @@ routes.get(
 );
 
 routes.post("/create-trainer", authMiddleware, UserAdminController.createUser);
+routes.post("/create-staff", authMiddleware, UserAdminController.createUser);
 
 // Lấy danh sách tất cả staff
 routes.get("/get-all-staffs", authMiddleware, UserAdminController.getAllStaffs);
