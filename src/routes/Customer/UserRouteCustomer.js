@@ -9,6 +9,8 @@ const MessageController = require("../../controllers/User/message");
 const TransactionAdminController = require("../../controllers/Admin/TransactionAdminController");
 const TransactionController = require("../../controllers/User/transaction");
 const MemberCheckController = require("../../controllers/User/Member");
+const upload = require("../../middlewares/upload");
+const UserController = require("../../controllers/User/user");
 
 
 
@@ -48,6 +50,19 @@ router.get(
   "/member-check",
   authUserApp,
   MemberCheckController.memberavalable
+);
+
+router.put(
+  "/upload-avatar",
+  upload.single("avatar"),
+  authUserApp,
+  UserController.updateUser
+);
+
+router.get(
+  "/detail_user",
+  authUserApp,
+  UserController.detailUser
 );
 
 
