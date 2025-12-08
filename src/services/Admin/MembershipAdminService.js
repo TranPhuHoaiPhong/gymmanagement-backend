@@ -271,7 +271,7 @@ const getCurrentMembership = (membershipId) => {
         .sort({ endDate: -1 })
         .limit(1);
 
-      console.log("checkMembership[0]", checkMembership[0])
+      console.log("checkMembership[0]", checkMembership)
 
       if (checkMembership === null) {
         resolve({
