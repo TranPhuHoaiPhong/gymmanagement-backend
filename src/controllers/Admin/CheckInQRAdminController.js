@@ -31,8 +31,12 @@ const checkInQRcreate = async (req, res) => {
 
 const verifyQR = async (req, res) => {
   try {
+    console.log("vô")
     const { hash } = req.body;
-    const userId = req.user.id; // member đang quét QR
+    console.log(hash);
+    const userId = req.userId; // member đang quét QR
+
+    console.log("qua", userId)
 
     if (!hash) {
       return res.status(400).json({ status: "ERROR", message: "Thiếu hash" });
