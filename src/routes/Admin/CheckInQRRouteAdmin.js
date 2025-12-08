@@ -6,6 +6,7 @@ const {
   authMiddleware,
   authAdminOrStaff,
   authUserOrAdminOrStaff,
+  authUserApp,
 } = require("../../middlewares/authMiddleware/authMiddleware");
 
 routes.post(
@@ -16,7 +17,7 @@ routes.post(
 
 routes.post(
   "/checkin/qr/verify",
-  authUserMiddleware,
+  authUserApp,
   CheckInQRAdminController.verifyQR
 ); //  (member quét)
 

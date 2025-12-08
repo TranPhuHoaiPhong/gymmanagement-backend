@@ -264,12 +264,14 @@ const getCurrentMembership = (membershipId) => {
     try {
       const checkMembership = await Membership.find({
         userId: membershipId,
-      })
+      }) 
         .populate("userId", "fullName email") // Lấy thông tin user
         .populate("packageId", "name price type sessionsWithTrainer") // Lấy thông tin package
         .populate("trainerId", "fullName email") // Lấy thông tin trainer nếu có
         .sort({ endDate: -1 })
         .limit(1);
+
+      console.log("checkMembership[0]", checkMembership[0])
 
       if (checkMembership === null) {
         resolve({

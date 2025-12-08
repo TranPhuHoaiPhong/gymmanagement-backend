@@ -17,8 +17,16 @@ const UserController = require("../../controllers/User/user");
 router.post("/sign-in", authController.login);
 router.post("/sign-up", authController.register); 
 
-router.post("/health-info", authUserApp, healthInfo.addHealthInfo); 
+// add health info
+router.post("/health-info", authUserApp, healthInfo.addHealthInfo);  
 
+
+router.put("/update-health-info", authUserApp, healthInfo.updateHealthInfo);  
+
+
+
+// get health info 
+router.get("/get-health-info", authUserApp, healthInfo.getHealthInfo); 
 
 // Lấy review theo trainer
 router.get("/trainer/:trainerId", ReviewController.getReviewsByTrainer);
