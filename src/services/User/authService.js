@@ -1,4 +1,5 @@
 const User = require("../../models/User/User");
+const Notification = require("../../models/Notification/Notification")
 const bcrypt = require("bcryptjs"); 
 const jwt = require("jsonwebtoken");
 const { genneralAccessToken, genneralRefreshToken } = require("../JwtService/JwtService");
@@ -44,6 +45,16 @@ async function registerUserService({ fullName, email, password, phone, gender, d
 
     await newUser.save();
 
+    await Notification.create({
+      userId: newUser._id,
+      type: "reminder", // Hoặc "deal" tùy logic
+      title: "Chào mừng!",
+      message: `Xin chào ${newUser.fullName}, cảm ơn bạn đã đăng ký tài khoản!`,
+      target: "single",
+      isRead: false,
+      data: {} 
+    });
+ 
     return {
       success: true,
       message: "Đăng ký thành công",
@@ -105,7 +116,7 @@ async function loginUserService({ email, password }) {
                     };
     const accessToken = genneralAccessToken(payload);
     const refreshToken = genneralRefreshToken(payload);
-
+ 
     return {
       success: true,
       message: "Đăng nhập thành công",

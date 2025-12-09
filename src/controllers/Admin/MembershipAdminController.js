@@ -126,12 +126,10 @@ const getCurrentMembership = async (req, res) => {
       return res.status(400).json({
         status: "ERROR",
         message: "membershipId không hợp lệ",
-      });
+      }); 
     }
 
-    const resGetDetails = await MembershipAdminService.getCurrentMembership(
-      membershipId
-    );
+    const resGetDetails = await MembershipAdminService.getAllMembershipsByUser(membershipId)
     return res.status(200).json(resGetDetails);
   } catch (error) {
     console.error("Lỗi lấy membership:", error);

@@ -28,7 +28,7 @@ routes.get(
 );
 routes.get(
   "/get-details-current-membership/:id",
-  MembershipAdminController.getCurrentMembership
+  MembershipAdminController.getCurrentMembership 
 );
 
 routes.post(

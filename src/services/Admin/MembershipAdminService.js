@@ -257,35 +257,68 @@ const getDetailsMembership = (membershipId) => {
       reject(e);
     }
   });
-};
+}
 
-const getCurrentMembership = (membershipId) => {
+const getAllMembershipsByUser = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const checkMembership = await Membership.find({
-        userId: membershipId,
+      const memberships = await Membership.find({
+        userId: userId,
       }) 
-        .populate("userId", "fullName email") // Lấy thông tin user
-        .populate("packageId", "name price type sessionsWithTrainer") // Lấy thông tin package
-        .populate("trainerId", "fullName email") // Lấy thông tin trainer nếu có
-        .sort({ endDate: -1 })
-        .limit(1);
+        .populate("userId", "fullName email")
+        .populate("packageId", "name price type sessionsWithTrainer durationInDays")
+        .populate("trainerId", "fullName email")
+        .populate({
+          path: "checkInDates.sessionId",
+          select: "name duration startTime endTime",
+        })
+        .sort({ startDate: -1 });
 
-      console.log("checkMembership[0]", checkMembership)
+      console.log(`Found ${memberships}}`);
 
-      if (checkMembership === null) {
+      // Transform data để frontend dễ xử lý
+      const transformedData = memberships.map(membership => {
+        const membershipObj = membership.toObject();
+        
+        // Chuyển đổi checkInDates thành dạng dễ xử lý
+        const formattedCheckInDates = membershipObj.checkInDates ? 
+          membershipObj.checkInDates.map(item => ({
+            date: item.date,
+            sessionId: item.sessionId?._id || item.sessionId,
+            sessionType: item.sessionType || 'self',
+            _id: item._id,
+            sessionInfo: item.sessionId ? {
+              name: item.sessionId.name,
+              duration: item.sessionId.duration,
+              startTime: item.sessionId.startTime,
+              endTime: item.sessionId.endTime,
+            } : null
+          })) : [];
+
+        return {
+          ...membershipObj,
+          formattedCheckInDates,
+          originalCheckInDates: membershipObj.checkInDates
+        };
+      });
+
+      console.log("transformedData", transformedData);
+
+      if (memberships.length === 0) {
         resolve({
-          status: "ERROR",
-          message: "Membership khong ton tai",
+          status: "OK",
+          message: "Người dùng chưa có gói tập nào",
+          data: []
         });
       } else {
         resolve({
           status: "OK",
-          message: "Lấy thông tin thành công",
-          data: checkMembership[0],
+          message: "Lấy danh sách gói tập thành công",
+          data: transformedData
         });
       }
     } catch (e) {
+      console.error("Error in getAllMembershipsByUser:", e);
       reject(e);
     }
   });
@@ -343,6 +376,6 @@ module.exports = {
   getAllMembership,
   getDetailsMembership,
   paymentMembership,
-  getCurrentMembership,
+  getAllMembershipsByUser,
   renewMembership,
 };

@@ -11,6 +11,7 @@ const TransactionController = require("../../controllers/User/transaction");
 const MemberCheckController = require("../../controllers/User/Member");
 const upload = require("../../middlewares/upload");
 const UserController = require("../../controllers/User/user");
+const getNofController = require("../../controllers/User/notification");
 
 
 
@@ -23,7 +24,7 @@ router.post("/health-info", authUserApp, healthInfo.addHealthInfo);
 
 router.put("/update-health-info", authUserApp, healthInfo.updateHealthInfo);  
 
-
+router.get("/get-notification", authUserApp, getNofController.getNofControler)
 
 // get health info 
 router.get("/get-health-info", authUserApp, healthInfo.getHealthInfo); 
