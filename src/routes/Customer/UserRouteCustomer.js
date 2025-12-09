@@ -43,7 +43,10 @@ router.delete("/delete-review/:id", authUserApp, ReviewController.deleteReview);
 // router.post("/:reviewId/like", ReviewController.toggleLike);
 // Change password
 router.post('/send', authUserApp, OtpController.sendOtp);
+router.post('/sendGmail', OtpController.sendOtp);
+
 router.post('/verify', authUserApp, OtpController.verifyOtp);
+router.post('/verify-gmail', OtpController.verifyOtpGmail);
 
 router.get('/message/:id', MessageController.getMessage);
 
