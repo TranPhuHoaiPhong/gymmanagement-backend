@@ -20,14 +20,20 @@ routes.post(
 
 routes.post(
   "/update-transaction/:id",
-  authMiddleware,
+  authAdminOrStaff,
   TransactionAdminController.updateTransaction
 );
 
 routes.get(
   "/get-all-transactions",
-  authMiddleware,
+  authAdminOrStaff,
   TransactionAdminController.getAllTransactions
+);
+
+routes.get(
+  "/get-all-amount-and-date-transactions",
+  authAdminOrStaff,
+  TransactionAdminController.getAllAmountAndDateTransactions
 );
 
 routes.get(
@@ -43,13 +49,13 @@ routes.get(
 
 routes.get(
   "/get-report-transaction/excel",
-  authMiddleware,
+  authAdminOrStaff,
   TransactionAdminController.exportExcel
 );
 
 routes.get(
   "/get-report-transaction/pdf",
-  authMiddleware,
+  authAdminOrStaff,
   TransactionAdminController.exportPDF
 );
 

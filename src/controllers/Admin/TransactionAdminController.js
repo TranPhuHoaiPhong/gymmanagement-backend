@@ -101,6 +101,21 @@ const getAllTransactions = async (req, res) => {
   }
 };
 
+const getAllAmountAndDateTransactions = async (req, res) => {
+  try {
+    const resTransaction =
+      await TransactionAdminService.getAllAmountAndDateTransactions();
+
+    return res.status(200).json(resTransaction);
+  } catch (error) {
+    console.error("Lỗi lấy tất cả Transaction:", error);
+    return res.status(500).json({
+      status: "ERROR",
+      message: "Lỗi máy chủ, vui lòng thử lại sau",
+    });
+  }
+};
+
 const getDetailsTransaction = async (req, res) => {
   try {
     const transactionId = req.params.id;
@@ -178,4 +193,5 @@ module.exports = {
   exportExcel,
   exportPDF,
   createTransactionDirect,
+  getAllAmountAndDateTransactions,
 };

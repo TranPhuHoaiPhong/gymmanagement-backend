@@ -72,6 +72,24 @@ const createTransactionDirect = (TransactionData) => {
   });
 };
 
+const getAllAmountAndDateTransactions = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const getAllAmountAndDate = await Transaction.find(
+        {},
+        "amount transactionDate"
+      );
+      resolve({
+        status: "OK",
+        message: "Lấy tất cả giao dịch thành công.",
+        data: getAllAmountAndDate,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const createTransaction = (newTransaction) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -403,4 +421,5 @@ module.exports = {
   buildExcelWorkbook,
   buildPDFDocument,
   createTransactionDirect,
+  getAllAmountAndDateTransactions,
 };

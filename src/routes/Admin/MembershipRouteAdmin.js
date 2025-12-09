@@ -4,6 +4,7 @@ const MembershipAdminController = require("../../controllers/Admin/MembershipAdm
 const {
   authUserMiddleware,
   authMiddleware,
+  authAdminOrStaff,
 } = require("../../middlewares/authMiddleware/authMiddleware");
 
 routes.post("/create-membership", MembershipAdminController.createMembership);
@@ -19,7 +20,7 @@ routes.delete(
 );
 routes.get(
   "/get-all-memberships",
-  authMiddleware,
+  authAdminOrStaff,
   MembershipAdminController.getAllMembership
 );
 routes.get(
@@ -28,7 +29,7 @@ routes.get(
 );
 routes.get(
   "/get-details-current-membership/:id",
-  MembershipAdminController.getCurrentMembership 
+  MembershipAdminController.getCurrentMembership
 );
 
 routes.post(

@@ -15,7 +15,7 @@ routes.post(
 
 routes.get(
   "/get-all-notifications",
-  authMiddleware,
+  authAdminOrStaff,
   NotificationAdminController.getAllNotification
 );
 

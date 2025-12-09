@@ -6,6 +6,7 @@ const {
   authUserMiddleware,
   authMiddleware,
   authUserOrAdminOrStaff,
+  authAdminOrStaff,
 } = require("../../middlewares/authMiddleware/authMiddleware");
 const upload = require("../../middlewares/upload");
 
@@ -28,7 +29,7 @@ routes.post("/create-member", authMiddleware, UserAdminController.createUser);
 
 routes.get(
   "/get-all-members",
-  authMiddleware,
+  authAdminOrStaff,
   UserAdminController.getAllMembers
 );
 
@@ -83,4 +84,3 @@ routes.post(
 );
 
 module.exports = routes;
- 

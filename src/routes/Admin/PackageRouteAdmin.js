@@ -4,21 +4,22 @@ const packageAdminController = require("../../controllers/Admin/PackageAdminCont
 const {
   authUserMiddleware,
   authMiddleware,
+  authAdminOrStaff,
 } = require("../../middlewares/authMiddleware/authMiddleware");
 
 routes.post(
   "/create-package",
-  authMiddleware,
+  authAdminOrStaff,
   packageAdminController.createPackage
 );
 routes.post(
   "/update-package/:id",
-  authMiddleware,
+  authAdminOrStaff,
   packageAdminController.updatePackage
 );
 routes.delete(
   "/delete-package/:id",
-  authMiddleware,
+  authAdminOrStaff,
   packageAdminController.deletePackage
 );
 
