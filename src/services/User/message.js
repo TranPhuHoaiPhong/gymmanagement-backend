@@ -46,6 +46,25 @@ class MessageService {
       throw error;
     }
   }
+
+  static async getMessageById(userId, toId) {
+    try {
+
+      const result = await Message.find({
+        $or: [
+          { from: userId, to: toId },
+          { from: toId, to: userId }
+        ]
+      }).sort({ timestamp: 1 });
+
+      return {
+        success: true,
+        data: result,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = MessageService;

@@ -50,6 +50,8 @@ router.post('/verify-gmail', OtpController.verifyOtpGmail);
 
 router.get('/message/:id', MessageController.getMessage);
 
+router.get('/messagebyid/:id', MessageController.getMessageById);
+
 router.get('/message-all', MessageController.getAllMessage);
 
 // Transaction routes
