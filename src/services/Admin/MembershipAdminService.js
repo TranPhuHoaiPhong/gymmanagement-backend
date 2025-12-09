@@ -274,7 +274,6 @@ const getAllMembershipsByUser = (userId) => {
         })
         .sort({ startDate: -1 });
 
-      console.log(`Found ${memberships}}`);
 
       // Transform data để frontend dễ xử lý
       const transformedData = memberships.map(membership => {
@@ -301,8 +300,6 @@ const getAllMembershipsByUser = (userId) => {
           originalCheckInDates: membershipObj.checkInDates
         };
       });
-
-      console.log("transformedData", transformedData);
 
       if (memberships.length === 0) {
         resolve({

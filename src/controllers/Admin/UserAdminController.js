@@ -185,6 +185,17 @@ const getAllMembers = async (req, res) => {
   }
 };
 
+const getAllMembersAndStaffs = async (req, res) => {
+  try {
+    const resGetAll = await UserAdminService.getAllMembersAndStaffs();
+    return res.status(200).json(resGetAll);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const getAllStaffs = async (req, res) => {
   try {
     const resGetAll = await UserAdminService.getAllStaffs();
@@ -364,4 +375,5 @@ module.exports = {
   getDetailsTrainer,
   getDetailsMember,
   resetPasswordUser,
+  getAllMembersAndStaffs
 };

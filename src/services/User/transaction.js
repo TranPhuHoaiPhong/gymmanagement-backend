@@ -2,6 +2,7 @@ const Transaction = require("../../models/Transaction/transaction");
 const User = require("../../models/User/User");
 const Package = require("../../models/Package/package");
 const Membership = require("../../models/Membership/Membership");
+const Notification = require("../../models/Notification/Notification");
 
 class TransactionService {
 
@@ -62,6 +63,18 @@ class TransactionService {
         paymentMethod,
         status: "completed",
       });
+    
+
+
+    await Notification.create({ 
+          userId: userId,
+          type: "purchase", // Hoặc "deal" tùy logic
+          title: "Thanh toán mua hàng",
+          message: `Bạn vừa thanh toán mua hàng thành công gói hàng trị giá ${formatAmount(amount)}đ`,
+          target: "single",
+          isRead: false,
+          data: {} 
+        });
 
       return {
         success: true,

@@ -241,6 +241,25 @@ const getAllMembers = () => {
   });
 };
 
+const getAllMembersAndStaffs = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Lấy cả member và staff
+      const users = await User.find({
+        role: { $in: ["member", "staff"] },
+      }).populate([{ path: "healthInfo" }, { path: "membership" }]);
+
+      resolve({
+        status: "OK",
+        message: "Lấy danh sách thành công",
+        data: users,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const getAllStaffs = () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -422,4 +441,5 @@ module.exports = {
   getDetailsTrainer,
   getDetailsMember,
   resetPasswordUser,
+  getAllMembersAndStaffs
 };

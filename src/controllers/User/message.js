@@ -3,6 +3,7 @@ const MessageService = require("../../services/User/message");
 class MessageController {
   static async getMessage(req, res) {
     const userId = req.params.id;
+    console.log("userId", userId);
  
     try {
       const reviews = await MessageService.getMessage(userId);

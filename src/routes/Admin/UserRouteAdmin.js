@@ -32,6 +32,16 @@ routes.get(
   UserAdminController.getAllMembers
 );
 
+// member and staff
+routes.get(
+  "/get-all-members-staffs",
+  authMiddleware,
+  UserAdminController.getAllMembersAndStaffs
+);
+
+
+
+
 // Lấy danh sách tất cả trainer  getAllTrainers
 routes.get(
   "/get-all-trainers",

@@ -20,7 +20,6 @@ class NotificationService {
         };
       }
 
-      console.log("nof", nof);
 
       return {
         success: true,
@@ -35,6 +34,40 @@ class NotificationService {
       };
     }
   }
+
+  static async updateIsreadNofi(userId) {
+    try {
+      await Notification.updateMany(
+        {
+          $or: [
+            { target: "all" }, 
+            { userId: userId, target: "single" }
+          ]
+        },
+        { $set: { isRead: true } }
+      );
+
+      // Lấy lại danh sách sau khi cập nhật
+      const nof = await Notification.find({
+        $or: [
+          { target: "all" },
+          { userId: userId, target: "single" }
+        ]
+      }).sort({ createdAt: -1 });
+
+      return {
+        success: true,
+        data: nof
+      };
+    } catch (e) {
+      console.error("Error updateIsreadNofi:", e);
+      return {
+        success: false,
+        message: "Lỗi khi lấy thông báo"
+      };
+    }
+  }
+
 }
 
 module.exports = NotificationService;
