@@ -94,7 +94,7 @@ routes.post(
 
 routes.post(
   "/reset-password",
-  authMiddleware,
+  authAdminOrStaff,
   UserAdminController.resetPasswordUser
 );
 

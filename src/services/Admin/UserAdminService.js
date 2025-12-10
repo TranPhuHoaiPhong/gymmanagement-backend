@@ -1,5 +1,6 @@
 const User = require("../../models/User/User");
 const bcrypt = require("bcryptjs");
+const sendEmail = require("../../services/utils/sendEmail");
 const {
   genneralAccessToken,
   genneralRefreshToken,
@@ -292,7 +293,7 @@ const getAllMembersAndStaffsAdmin = (userId) => {
     try {
       const users = await User.find({
         role: { $in: ["member", "staff", "admin"] },
-        _id: { $ne: userId }, 
+        _id: { $ne: userId },
       });
 
       resolve({
@@ -305,7 +306,6 @@ const getAllMembersAndStaffsAdmin = (userId) => {
     }
   });
 };
-
 
 const getAllStaffs = () => {
   return new Promise(async (resolve, reject) => {
@@ -456,24 +456,38 @@ const resetPasswordUser = (email) => {
         });
       }
 
-      const newPassword = "123456";
+      const newPassword = Math.random().toString(36).slice(-8);
+
+      // Hash password mới
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(newPassword, salt);
 
       user.passwordHash = hashedPassword;
-      const updatedUser = await user.save(); // Lưu user đã cập nhật
+      await user.save();
+
+      // Gửi email
+      await sendEmail({
+        to: user.email,
+        subject: "Khôi phục mật khẩu GYM2P",
+        html: `
+          <h3>Mật khẩu mới của bạn</h3>
+          <p>Email: <b>${user.email}</b></p>
+          <p>Mật khẩu mới: <b>${newPassword}</b></p>
+          <p>Vui lòng đăng nhập và đổi mật khẩu ngay sau khi đăng nhập.</p>
+        `,
+      });
 
       resolve({
         status: "OK",
-        message: "Reset mật khẩu thành công",
-        newPassword: newPassword, // Có thể bỏ nếu không muốn expose
-        data: updatedUser,
+        message: "Mật khẩu mới đã được gửi vào email của khách hàng!",
       });
     } catch (e) {
+      console.log("Reset password error:", e);
       reject(e);
     }
   });
 };
+
 module.exports = {
   createUser,
   loginUser,
@@ -489,5 +503,5 @@ module.exports = {
   getDetailsMember,
   resetPasswordUser,
   getAllMembersAndStaffs,
-  getAllMembersAndStaffsAdmin
+  getAllMembersAndStaffsAdmin,
 };

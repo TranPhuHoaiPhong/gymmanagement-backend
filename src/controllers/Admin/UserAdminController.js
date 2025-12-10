@@ -215,8 +215,10 @@ const getAllMembersAndStaffs = async (req, res) => {
 
 const getAllMembersAndStaffsAdmin = async (req, res) => {
   try {
-    const userId = req.params.id
-    const resGetAll = await UserAdminService.getAllMembersAndStaffsAdmin(userId);
+    const userId = req.params.id;
+    const resGetAll = await UserAdminService.getAllMembersAndStaffsAdmin(
+      userId
+    );
     return res.status(200).json(resGetAll);
   } catch (e) {
     return res.status(404).json({
@@ -379,11 +381,15 @@ const resetPasswordUser = async (req, res) => {
         message: "Vui lòng nhập email",
       });
     }
-    const resResetPassword = await UserAdminService.resetPasswordUser(email);
-    return res.status(200).json(resResetPassword);
+
+    const result = await UserAdminService.resetPasswordUser(email);
+
+    return res.status(200).json(result);
   } catch (e) {
-    return res.status(404).json({
-      message: e,
+    console.log("Reset password error:", e);
+    return res.status(500).json({
+      status: "ERR",
+      message: "Lỗi máy chủ",
     });
   }
 };
@@ -406,5 +412,5 @@ module.exports = {
   resetPasswordUser,
   getAllMembersAndStaffs,
   getAllUsersMembers,
-  getAllMembersAndStaffsAdmin
+  getAllMembersAndStaffsAdmin,
 };
