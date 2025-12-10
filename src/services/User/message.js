@@ -3,6 +3,7 @@ const Message = require("../../models/Message/Message");
 class MessageService {
   static async getMessage(userId) {
     try {
+
       const result = await Message.find({
         $or: [{ from: userId }, { to: userId }],
       }).sort({ timestamp: 1 }); // có thể sắp xếp theo thời gian
@@ -18,6 +19,7 @@ class MessageService {
 
   static async getAllMessage() {
     try {
+      console.log("đang lấy")
       // Lấy tất cả message, loại bỏ from = adminId
       const adminId = "68ff36d578fc9208ee291a83";
       const result = await Message.find({ from: { $ne: adminId } });
@@ -39,6 +41,25 @@ class MessageService {
         success: true,
         data: result,
         countFrom,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getMessageById(userId, toId) {
+    try {
+
+      const result = await Message.find({
+        $or: [
+          { from: userId, to: toId },
+          { from: toId, to: userId }
+        ]
+      }).sort({ timestamp: 1 });
+
+      return {
+        success: true,
+        data: result,
       };
     } catch (error) {
       throw error;

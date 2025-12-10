@@ -11,7 +11,6 @@ class UserController {
     
     try {
       const member = await userService.user(userId, avatarUrl)
-      console.log("uuu", member);
       if (!member.success) {
         return res.status(400).json({ msg: member.message });
       }

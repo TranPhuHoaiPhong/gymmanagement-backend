@@ -32,6 +32,21 @@ class OtpController {
     }
     
   }
+
+  static async verifyOtpGmail(req, res) {
+    try {
+      const isValid = await OtpService.verifyOtpGmail(req.body);
+
+      if (!isValid.success) {
+        return res.status(400).json({ msg: isValid.message });
+      }
+      return res.status(200).json({  msg: isValid.message });
+
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
+    }
+    
+  }
 }
 
 module.exports = OtpController;

@@ -54,7 +54,7 @@ async function registerUserService({ fullName, email, password, phone, gender, d
       isRead: false,
       data: {} 
     });
- 
+  
     return {
       success: true,
       message: "Đăng ký thành công",

@@ -49,6 +49,43 @@ export class OtpService {
         }
     }
 
+    static async verifyOtpGmail(data) {
+        try {
+            if( !data) {
+                return {
+                    success: false,
+                    message: "Dữ liệu không hợp lệ",
+                };
+            }
+
+            const { email, otp } = data;
+
+            if (!email || !otp ) {
+                return {
+                    success: false,
+                    message: "Vui lòng điền đầy đủ thông tin",
+                };
+            }
+
+            if (verifyOtp(email, otp)) {
+                return {
+                    success: true,
+                    message: "Xác minh thành công thành công",
+                }
+            } else {
+                return {
+                    success: false,
+                    message: "Mã OTP không đúng hoặc đã hết hạn",
+                }
+            }   
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ msg: error.message });
+        }
+    }
+
+
+
     static async verifyOtp(userId, data) {
         try {
             if( !data) {

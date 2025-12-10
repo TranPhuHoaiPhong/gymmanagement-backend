@@ -33,6 +33,20 @@ routes.get(
   UserAdminController.getAllMembers
 );
 
+// member and staff
+routes.get(
+  "/get-all-members-staffs",
+  authUserOrAdminOrStaff,
+  UserAdminController.getAllMembersAndStaffs
+);
+
+//  Message all
+routes.get(
+  "/get-all-members-staffs-admin/:id",
+  authUserOrAdminOrStaff,
+  UserAdminController.getAllMembersAndStaffsAdmin
+);
+
 // Lấy danh sách tất cả trainer  getAllTrainers
 routes.get(
   "/get-all-trainers",

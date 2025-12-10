@@ -205,6 +205,33 @@ const getAllUsers = (limit, page) => {
   });
 };
 
+const getAllUsersMember = (limit, page) => {
+  // sort
+  // console.log("Sort query:", sort);
+  return new Promise(async (resolve, reject) => {
+    try {
+      const totalUsers = await User.countDocuments();
+      const users = await User.find()
+        .limit(limit)
+        .skip(page * limit);
+      // .sort({
+      //   fullName: sort,
+      // });
+
+      resolve({
+        status: "OK",
+        message: "Lấy danh sách thành công",
+        data: users,
+        total: totalUsers,
+        pageCurrent: Number(page) + 1,
+        totalPage: Math.ceil(totalUsers / limit),
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 const getAllTrainers = () => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -240,6 +267,45 @@ const getAllMembers = () => {
     }
   });
 };
+
+const getAllMembersAndStaffs = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Lấy cả member và staff
+      const users = await User.find({
+        role: { $in: ["member", "staff"] },
+      }).populate([{ path: "healthInfo" }, { path: "membership" }]);
+
+      resolve({
+        status: "OK",
+        message: "Lấy danh sách thành công",
+        data: users,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getAllMembersAndStaffsAdmin = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const users = await User.find({
+        role: { $in: ["member", "staff", "admin"] },
+        _id: { $ne: userId }, 
+      });
+
+      resolve({
+        status: "OK",
+        message: "Lấy danh sách thành công",
+        data: users,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 
 const getAllStaffs = () => {
   return new Promise(async (resolve, reject) => {
@@ -422,4 +488,6 @@ module.exports = {
   getDetailsTrainer,
   getDetailsMember,
   resetPasswordUser,
+  getAllMembersAndStaffs,
+  getAllMembersAndStaffsAdmin
 };

@@ -26,6 +26,8 @@ router.put("/update-health-info", authUserApp, healthInfo.updateHealthInfo);
 
 router.get("/get-notification", authUserApp, getNofController.getNofControler)
 
+router.put("/update-notification", authUserApp, getNofController.UpdateNofControler)
+
 // get health info 
 router.get("/get-health-info", authUserApp, healthInfo.getHealthInfo); 
 
@@ -41,9 +43,14 @@ router.delete("/delete-review/:id", authUserApp, ReviewController.deleteReview);
 // router.post("/:reviewId/like", ReviewController.toggleLike);
 // Change password
 router.post('/send', authUserApp, OtpController.sendOtp);
+router.post('/sendGmail', OtpController.sendOtp);
+
 router.post('/verify', authUserApp, OtpController.verifyOtp);
+router.post('/verify-gmail', OtpController.verifyOtpGmail);
 
 router.get('/message/:id', MessageController.getMessage);
+
+router.get('/messagebyid/:id', MessageController.getMessageById);
 
 router.get('/message-all', MessageController.getAllMessage);
 

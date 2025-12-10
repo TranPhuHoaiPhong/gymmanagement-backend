@@ -16,7 +16,6 @@ function setupWebSocket(server) {
         // Khi user login WS
         if (data.type === "login") {
         clients.set(data.userId, ws);
-        console.log(`User ${data.userId} connected`);
         }
 
         // Khi user gửi tin nhắn

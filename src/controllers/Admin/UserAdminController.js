@@ -163,6 +163,23 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const getAllUsersMembers = async (req, res) => {
+  try {
+    const { limit, page } = req.query;
+    // sort
+    const resGetAll = await UserAdminService.getAllUsers(
+      Number(limit) || 5,
+      Number(page) || 0
+      // sort
+    );
+    return res.status(200).json(resGetAll);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const getAllTrainers = async (req, res) => {
   try {
     const resGetAll = await UserAdminService.getAllTrainers();
@@ -177,6 +194,29 @@ const getAllTrainers = async (req, res) => {
 const getAllMembers = async (req, res) => {
   try {
     const resGetAll = await UserAdminService.getAllMembers();
+    return res.status(200).json(resGetAll);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const getAllMembersAndStaffs = async (req, res) => {
+  try {
+    const resGetAll = await UserAdminService.getAllMembersAndStaffs();
+    return res.status(200).json(resGetAll);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const getAllMembersAndStaffsAdmin = async (req, res) => {
+  try {
+    const userId = req.params.id
+    const resGetAll = await UserAdminService.getAllMembersAndStaffsAdmin(userId);
     return res.status(200).json(resGetAll);
   } catch (e) {
     return res.status(404).json({
@@ -364,4 +404,7 @@ module.exports = {
   getDetailsTrainer,
   getDetailsMember,
   resetPasswordUser,
+  getAllMembersAndStaffs,
+  getAllUsersMembers,
+  getAllMembersAndStaffsAdmin
 };
