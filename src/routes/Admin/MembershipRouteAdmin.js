@@ -5,6 +5,7 @@ const {
   authUserMiddleware,
   authMiddleware,
   authAdminOrStaff,
+  authAdminOrStaffOrTrainer,
 } = require("../../middlewares/authMiddleware/authMiddleware");
 
 routes.post("/create-membership", MembershipAdminController.createMembership);
@@ -20,7 +21,7 @@ routes.delete(
 );
 routes.get(
   "/get-all-memberships",
-  authAdminOrStaff,
+  authAdminOrStaffOrTrainer,
   MembershipAdminController.getAllMembership
 );
 routes.get(

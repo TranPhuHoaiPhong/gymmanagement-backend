@@ -204,6 +204,38 @@ const authAdminOrStaff = (req, res, next) => {
   }
 };
 
+const authAdminOrStaffOrTrainer = (req, res, next) => {
+  try {
+    const token = req.headers.token?.split(" ")[1];
+
+    if (!token) {
+      return res
+        .status(401)
+        .json({ status: "ERROR", message: "Token không tồn tại" });
+    }
+
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
+    // Lưu thông tin user vào req
+    req.user = decoded;
+
+    // Check quyền
+    if (
+      decoded.role === "admin" ||
+      decoded.role === "staff" ||
+      decoded.role === "trainer"
+    ) {
+      next();
+    } else {
+      return res
+        .status(403)
+        .json({ status: "ERROR", message: "Bạn không có quyền truy cập" });
+    }
+  } catch (err) {
+    return res
+      .status(403)
+      .json({ status: "ERROR", message: "Token không hợp lệ" });
+  }
+};
 module.exports = {
   authStaff,
   authMiddleware, // chỉ cho admin
@@ -211,4 +243,5 @@ module.exports = {
   authUserApp, // xác thực cho app (member)
   authUserOrAdminOrStaff,
   authAdminOrStaff,
+  authAdminOrStaffOrTrainer,
 };

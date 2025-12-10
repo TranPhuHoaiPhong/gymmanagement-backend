@@ -1,5 +1,9 @@
 const TransactionAdminService = require("../../services/Admin/TransactionAdminService");
 const Transaction = require("../../models/Transaction/transaction");
+const TransactionOTP = require("../../models/TransactionOTP/TransactionOTP");
+const User = require("../../models/User/User");
+const Package = require("../../models/Package/package");
+const sendEmail = require("../../services/utils/sendEmail");
 
 const createTransaction = async (req, res) => {
   try {
@@ -56,6 +60,105 @@ const createTransactionDirect = async (req, res) => {
     return res.status(500).json({
       status: "ERROR",
       message: "Lỗi máy chủ, vui lòng thử lại sau",
+    });
+  }
+};
+
+const sendTransactionOTP = async (req, res) => {
+  try {
+    const { userId, packageId, trainerId } = req.body;
+
+    console.log("req.body", req.body);
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res
+        .status(400)
+        .json({ status: "ERROR", message: "User không tồn tại" });
+    }
+
+    const getEmail = user.email;
+    if (!getEmail) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Email không hợp lệ",
+      });
+    }
+
+    //
+
+    const pack = await Package.findById(packageId);
+    if (!pack) {
+      return res
+        .status(400)
+        .json({ status: "ERROR", message: "Gói tập không tồn tại" });
+    }
+
+    // Tạo OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Lưu vào bảng TransactionOTP
+    await TransactionOTP.create({
+      memberId: userId,
+      otp,
+      transactionData: { userId, packageId, trainerId },
+      expireAt: new Date(Date.now() + 5 * 60 * 1000), // 5 phút
+    });
+
+    // Gửi email
+    await sendEmail({
+      to: getEmail,
+      subject: "Xác nhận giao dịch tại GYM2P",
+      html: `<p>Mã OTP của bạn là: <b>${otp}</b></p>`,
+    });
+
+    return res.status(200).json({
+      status: "OK",
+      message: "OTP đã gửi đến email member",
+    });
+  } catch (err) {
+    console.error("Lỗi gửi OTP:", err);
+    return res.status(500).json({
+      status: "ERROR",
+      message: "Lỗi máy chủ khi gửi OTP",
+    });
+  }
+};
+
+const verifyTransactionOTP = async (req, res) => {
+  try {
+    const { memberId, otp } = req.body;
+
+    const existing = await TransactionOTP.findOne({ memberId }).sort({
+      createdAt: -1,
+    });
+
+    if (!existing) {
+      return res
+        .status(400)
+        .json({ status: "ERROR", message: "Không tìm thấy OTP" });
+    }
+
+    if (existing.otp !== otp) {
+      return res
+        .status(400)
+        .json({ status: "ERROR", message: "OTP không đúng" });
+    }
+
+    // OTP đúng → tạo giao dịch trực tiếp
+    const createRes = await TransactionAdminService.createTransactionDirect(
+      existing.transactionData
+    );
+
+    // Xóa OTP
+    await TransactionOTP.deleteOne({ _id: existing._id });
+
+    return res.status(200).json(createRes);
+  } catch (error) {
+    console.error("Lỗi xác nhận OTP:", error);
+    return res.status(500).json({
+      status: "ERROR",
+      message: "Lỗi máy chủ khi xác nhận OTP",
     });
   }
 };
@@ -194,4 +297,6 @@ module.exports = {
   exportPDF,
   createTransactionDirect,
   getAllAmountAndDateTransactions,
+  sendTransactionOTP,
+  verifyTransactionOTP,
 };

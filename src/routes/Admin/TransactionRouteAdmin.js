@@ -19,6 +19,17 @@ routes.post(
 );
 
 routes.post(
+  "/send-transaction-otp",
+  authAdminOrStaff,
+  TransactionAdminController.sendTransactionOTP
+);
+
+routes.post(
+  "/verify-transaction-otp",
+  TransactionAdminController.verifyTransactionOTP
+);
+
+routes.post(
   "/update-transaction/:id",
   authAdminOrStaff,
   TransactionAdminController.updateTransaction

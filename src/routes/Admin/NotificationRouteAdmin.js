@@ -2,9 +2,8 @@ const express = require("express");
 const routes = express.Router();
 const NotificationAdminController = require("../../controllers/Admin/NotificationAdminController");
 const {
-  authUserMiddleware,
   authAdminOrStaff,
-  authMiddleware,
+  authAdminOrStaffOrTrainer,
 } = require("../../middlewares/authMiddleware/authMiddleware");
 
 routes.post(
@@ -15,7 +14,7 @@ routes.post(
 
 routes.get(
   "/get-all-notifications",
-  authAdminOrStaff,
+  authAdminOrStaffOrTrainer,
   NotificationAdminController.getAllNotification
 );
 
